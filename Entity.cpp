@@ -37,7 +37,7 @@ void Entity::draw(Image &screen) {
         }
     }
     else {
-        if (idleState < fps/4) {
+        if  (idleState < fps/4) {
             toDraw = &textures->bottom_r;
             toDraw_t = &textures->top_r;
         }
@@ -72,16 +72,16 @@ Point Entity::dirToVec(MovementDir dir) {
     switch (dir)
     {
     case MovementDir::LEFT:
-        return Point{.x = -1, .y = 0};
+        return Point(-1, 0);
 
     case MovementDir::RIGHT:
-        return Point{.x = 1, .y = 0};
+        return Point(1, 0);
     
     case MovementDir::UP:
-        return Point{.x = 0, .y = -1};
+        return Point(0, -1);
 
     case MovementDir::DOWN:
-        return Point{.x = 0, .y = 1};
+        return Point(0, 1);
     
     default:
         break;
@@ -91,9 +91,7 @@ Point Entity::dirToVec(MovementDir dir) {
 void Entity::makeMove(MovementDir dir) {
     updatePrevPos();
     animationState = TILE_SIZE - 2;
-    Point dirVec = dirToVec(dir);
-    pos.x += dirVec.x;
-    pos.y += dirVec.y;
+    pos += dirToVec(dir);
 }
 
 void Entity::setDirection(MovementDir dir) {

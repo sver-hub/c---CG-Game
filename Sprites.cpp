@@ -35,8 +35,17 @@ void Sprites::load(Image &tiles) {
     floor_crack_left.initTile(tiles, 16,400);
     floor_crack_right.initTile(tiles, 32,400);
 
-    hero = new TextureSet(tiles, 144, 384);
+    exit.initTile(tiles, 48,400);
 
-    enemy_slime = new TextureSet(tiles, 432, 384);
+    int y_shift = 5;
+
+    hero = new TextureSet(tiles, 144, 384 - y_shift);
+    enemy_slime = new TextureSet(tiles, 432, 384 - y_shift);
+    enemy_skelly = new TextureSet(tiles, 368, 416 - y_shift);
+    enemy_goblin = new TextureSet(tiles, 368, 288 - y_shift);
+    enemy_voodoo = new TextureSet(tiles, 368, 320 - y_shift);
+    enemy_cultist = new TextureSet(tiles, 368, 224 - y_shift);
+    enemy_devil = new TextureSet(tiles, 368, 160 - y_shift);
+    enemy_angel = new TextureSet(tiles, 368, 128 - y_shift);
     
     }

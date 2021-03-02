@@ -7,7 +7,7 @@ class Player: public Entity {
 
     public:
 
-    Player(Point position);
+    Player(Field *_field, Point position);
 
     bool move(MovementDir dir, char *grid);
 };

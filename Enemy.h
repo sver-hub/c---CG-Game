@@ -3,27 +3,23 @@
 
 #include "Entity.h"
 #include <vector>
-class Field;
 
 class Enemy: public Entity {
 
     protected:
     int visionRadius;
 
-    Field *field;
 
-    bool seesPlayer(Point playerPos);
+    bool seesPlayer();
 
-    bool hasEnemiesNearby(std::vector<Enemy*> enemies);
+    bool hasEnemiesNearby(Point position);
 
     public:
-    Enemy(Field *_field, Point position = Point{.x = 0, .y = 0}) : Entity(position) {
-        field = _field;
-    }
+    Enemy(Field *_field, Point position = Point(0, 0)) : Entity(_field, position) { }
 
-    void move(char *grid, Point playerPos);
+    void move();
 
-    bool spawn(char *grid, Point playerPos, std::vector<Enemy*> enemies);
+    bool spawn();
 };
 
 #endif

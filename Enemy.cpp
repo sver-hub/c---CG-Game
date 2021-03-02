@@ -1,45 +1,56 @@
 #include "Enemy.h"
 #include "Field.h"
 
-bool Enemy::seesPlayer(Point playerPos) {
+bool Enemy::seesPlayer() {
+    Point playerPos = field->getPlayer()->getPos();
     return ((abs(playerPos.x - pos.x) <= visionRadius) && (abs(playerPos.y - pos.y) <= visionRadius));
 }
 
-void Enemy::move(char *grid, Point playerPos) {
-    if (seesPlayer(playerPos)) {
+void Enemy::move() {
+    Point playerPos = field->getPlayer()->getPos();
 
+    if (seesPlayer()) {
+        MovementDir randDir = static_cast<MovementDir>(rand()%4);
+        for (int i = 0; i < 4; i++) {
+            MovementDir dir = randDir;
+            dir = static_cast<MovementDir>((static_cast<int>(dir) + i)%4);
+            Point goTo = pos + dirToVec(dir);
+
+            if (field->isValid(goTo) && 
+                goTo.dist(playerPos) < pos.dist(playerPos)) 
+            {
+                makeMove(dir);
+                setDirection(dir);
+                return;
+            }
+
+        }
+        return;
     } else {
         MovementDir dir;
         int k = rand()%7;
-        if (k < 1) {        //go up
-            dir = MovementDir::UP;
-        }
-        else if (k < 2) {   //go right
-            dir = MovementDir::RIGHT;
-        }
-        else if (k < 3) {   //go down
-            dir = MovementDir::DOWN;
-        }
-        else if (k < 4) {   //go left
-            dir = MovementDir::LEFT;
+
+        if (k < 4) {
+            dir = static_cast<MovementDir>(k);
         }
         else {              //idle
             return;
         }
-        Point dirVec = dirToVec(dir);
-        Point goTo = Point{.x = pos.x + dirVec.x, .y = pos.y + dirVec.y};
+        
+        Point goTo = pos + dirToVec(dir);
         if (field->isValid(goTo))
             makeMove(dir);
         setDirection(dir);
     }
 }
 
-bool Enemy::spawn(char *grid, Point playerPos, std::vector<Enemy*> enemies) {
+bool Enemy::spawn() {
+    Point playerPos = field->getPlayer()->getPos();
     
     for (int i = 0; i < 1000; i++) {
         int x = rand() % GRID_SIZE;
         int y = rand() % GRID_SIZE;
-        if (grid[y * GRID_SIZE + x] != cfloor || seesPlayer(playerPos) || hasEnemiesNearby(enemies)) 
+        if (field->getGrid()[y * GRID_SIZE + x] != cfloor || seesPlayer() || hasEnemiesNearby(Point(x,y))) 
             continue;
         
         pos.x = x;
@@ -51,9 +62,9 @@ bool Enemy::spawn(char *grid, Point playerPos, std::vector<Enemy*> enemies) {
     return false;
 }
 
-bool Enemy::hasEnemiesNearby (std::vector<Enemy*> enemies) {
-    for (const auto &enemy : enemies) {
-        if (abs(pos.x - enemy->pos.x) + abs(pos.y - enemy->pos.y) == 1) 
+bool Enemy::hasEnemiesNearby (Point position) {
+    for (const auto &enemy : field->getEnemies()) {
+        if (position.dist(enemy->pos) == 1) 
             return true;
     }
     return false;

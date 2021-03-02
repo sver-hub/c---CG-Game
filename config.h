@@ -15,6 +15,8 @@ constexpr float turnDelay = .3f;
 constexpr char cwall = '#';
 constexpr char cvoid = '.';
 constexpr char cfloor = '_';
+constexpr char cplayer = '@';
+constexpr char cexit = 'x';
 constexpr char ctrap = 'T';
 
 constexpr Pixel empty{0, 0, 0, 0};

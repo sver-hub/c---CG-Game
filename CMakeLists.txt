@@ -15,6 +15,7 @@ set(SOURCE_FILES
         Field.cpp
         Sprites.cpp
         Enemy.cpp
+        Trap.cpp
         main.cpp)
 
 set(ADDITIONAL_INCLUDE_DIRS

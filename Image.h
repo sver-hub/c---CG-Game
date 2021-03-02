@@ -10,6 +10,40 @@ struct Pixel {
     uint8_t a;
 };
 
+struct Point {
+    int x;
+    int y;
+
+    Point(int _x, int _y) : x(_x), y(_y) {}
+
+    Point operator+(Point other) {
+        return Point(this->x + other.x, this->y + other.y);
+    }
+
+    Point operator-(Point other) {
+        return Point(this->x - other.x, this->y - other.y);
+    }
+
+    void operator+=(Point other) {
+        this->x += other.x;
+        this->y += other.y;
+    }
+
+    void operator-=(Point other) {
+        this->x -= other.x;
+        this->y -= other.y;
+    }
+
+    bool operator==(Point other) {
+        return this->x == other.x && this->y == other.y;
+    }
+
+    int dist(Point other) {
+        return abs(this->x - other.x) + abs(this->y - other.y);
+    }
+};
+
+
 
 
 class Image {

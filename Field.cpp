@@ -25,9 +25,10 @@ Field::Field(const std::string &level): gridSize(GRID_SIZE), tileSize(TILE_SIZE)
 }
 
 void Field::ProcessInput(MovementDir dir) {
-    if (player.move(dir, grid)) {
+    if (player->move(dir, grid)) {
+        
         for (const auto &enemy : enemies) {
-            enemy->move(grid, player.getPos());
+            enemy->move();
         }
     }
 }
@@ -46,7 +47,11 @@ void Field::draw(Image &screen) {
 void Field::redraw(Image &screen) {
     redrawLayer(screen, 1);
 
-    player.draw(screen);
+    for (const auto &trap: traps) {
+        trap->draw(screen);
+    }
+
+    player->draw(screen);
 
     for (const auto &enemy : enemies) {
         enemy->draw(screen);
@@ -57,8 +62,8 @@ void Field::redraw(Image &screen) {
 }
 
 void Field::redrawLayer(Image &screen, int layer_n) {
-    Point prev = player.getPrevPos();
-    Point pos = player.getPos();
+    Point prev = player->getPrevPos();
+    Point pos = player->getPos();
     bool clear = layer_n == 1;
     redrawTile(screen, prev.x, prev.y, layer_n, clear);
     redrawTile(screen, pos.x, pos.y, layer_n, clear);
@@ -90,9 +95,10 @@ bool Field::isValid(Point p) {
             && grid[p.y * GRID_SIZE + p.x] != cwall 
             && grid[p.y * GRID_SIZE + p.x] != cvoid)
     {
+        if (p == player->getPos()) return false;
+
         for (const auto &enemy : enemies) {
-            Point enemy_pos = enemy->getPos();
-            if (enemy_pos.x == p.x && enemy_pos.y == p.y) return false;
+            if (p == enemy->getPos()) return false;
         }
         return true;
     }
@@ -110,15 +116,30 @@ void Field::initLevel() {
                 putWall(x, y);
             } else if (c == cvoid) {
                 putVoid(x, y);
-            }     
+            } else if (c == cplayer) {
+                player = new Player(this, Point(x, y));
+                putFloor(x, y);
+            } else if (c == ctrap) {
+                putTrap(x, y);
+            } else if (c == cexit) {
+                level_l1.putTile(x, y, sprites->exit);
+            }
         }
     } 
 }
 
 void Field::spawnEnemies() {
-    for (int i = 0; i < 5; i++) {
-        Enemy_Slime *sl = new Enemy_Slime(this);
-        if (sl->spawn(grid, player.getPos(), enemies))
+    for (int i = 0; i < 10; i++) {
+        Enemy *sl;
+        if (i < 2) sl = new Enemy_Slime(this);
+        else if (i < 4) sl = new Enemy_Goblin(this);
+        else if (i < 6) sl = new Enemy_Skelly(this);
+        else if (i < 7) sl = new Enemy_Voodoo(this);
+        else if (i < 8) sl = new Enemy_Cultist(this);
+        else if (i < 9) sl = new Enemy_Devil(this);
+        else if (i < 10) sl = new Enemy_Angel(this);
+
+        if (sl->spawn())
             enemies.push_back(sl);
         else delete sl;
     }
@@ -226,5 +247,11 @@ void Field::putWall(int x, int y) {
     free(neig);
 }
 
+
+void Field::putTrap(int x, int y) {
+    Trap *t = new Trap(Point(x, y));
+    traps.push_back(t);
+    //level_l1.putTile(x, y, sprites->trap_2);
+}
 
 #endif

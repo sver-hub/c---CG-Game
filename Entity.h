@@ -5,10 +5,8 @@
 #include "config.h"
 #include "TextureSet.h"
 
-struct Point {
-    int x;
-    int y;
-};
+class Field;
+
 
 enum class MovementDir {
     UP,
@@ -30,6 +28,7 @@ class Entity {
 
     void drawIdle(Image &screen);
 
+    Field *field;
     Point pos;
     Point prev_pos;
     MovementDir direction = MovementDir::LEFT;
@@ -41,7 +40,7 @@ class Entity {
 
     public:
 
-    Entity(Point position): pos(position), prev_pos(position) {}
+    Entity(Field *_field, Point position): pos(position), prev_pos(position), field(_field) {}
 
     ~Entity() {}
 

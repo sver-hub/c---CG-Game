@@ -6,8 +6,15 @@
 #include "Sprites.h"
 #include "Player.h"
 #include <vector>
+#include "Trap.h"
 #include "Enemy.h"
 #include "Enemy_Slime.h"
+#include "Enemy_Angel.h"
+#include "Enemy_Cultist.h"
+#include "Enemy_Devil.h"
+#include "Enemy_Skelly.h"
+#include "Enemy_Voodoo.h"
+#include "Enemy_Goblin.h"
 
 class Field {
     char *grid;
@@ -16,9 +23,9 @@ class Field {
     Sprites *sprites;
     Image level_l1 = Image(SCREEN_WIDTH, SCREEN_HEIGHT, 4);
     Image level_l2 = Image(SCREEN_WIDTH, SCREEN_HEIGHT, 4);
-    Point starting_pos{.x = GRID_SIZE - 3, .y = GRID_SIZE -3};
-	Player player = Player(starting_pos);
+	Player *player;
     std::vector<Enemy*> enemies;
+    std::vector<Trap*> traps;
 
     void spawnEnemies();
 
@@ -31,7 +38,11 @@ class Field {
 
     ~Field() { delete grid; }
 
-    Player getPlayer() { return player; }
+    Player* getPlayer() { return player; }
+
+    char* getGrid() { return grid; }
+
+    std::vector<Enemy*> getEnemies() { return enemies; }
 
     void ProcessInput(MovementDir dir);
 
@@ -53,7 +64,7 @@ class Field {
 
     void putWall(int x, int y);
 
-    
+    void putTrap(int x, int y);
 
 };
 
