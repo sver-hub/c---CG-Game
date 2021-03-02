@@ -8,7 +8,6 @@
 Field::Field(const std::string &level): gridSize(GRID_SIZE), tileSize(TILE_SIZE) {
     grid = new char[gridSize*gridSize];
     sprites = Sprites::GetInstance();
-    player.setTextures(sprites->hero, sprites->hero_t);
 
     srand((unsigned)time(NULL));
 
@@ -21,7 +20,16 @@ Field::Field(const std::string &level): gridSize(GRID_SIZE), tileSize(TILE_SIZE)
     }
     fin.close();
 
-    initLevel();        
+    initLevel();
+    spawnEnemies();     
+}
+
+void Field::ProcessInput(MovementDir dir) {
+    if (player.move(dir, grid)) {
+        for (const auto &enemy : enemies) {
+            enemy->move(grid, player.getPos());
+        }
+    }
 }
 
 void Field::draw(Image &screen) {        
@@ -36,18 +44,31 @@ void Field::draw(Image &screen) {
 }
 
 void Field::redraw(Image &screen) {
-    Point prev = player.getPrevPos();
-    Point pos = player.getPos();
-
-    redrawTile(screen, prev.x, prev.y, 1);
-    redrawTile(screen, pos.x, pos.y, 1);
+    redrawLayer(screen, 1);
 
     player.draw(screen);
 
-    redrawTile(screen, prev.x, prev.y, 2, false);
-    redrawTile(screen, pos.x, pos.y, 2, false);
-    
+    for (const auto &enemy : enemies) {
+        enemy->draw(screen);
+    }
 
+    redrawLayer(screen, 2);
+    
+}
+
+void Field::redrawLayer(Image &screen, int layer_n) {
+    Point prev = player.getPrevPos();
+    Point pos = player.getPos();
+    bool clear = layer_n == 1;
+    redrawTile(screen, prev.x, prev.y, layer_n, clear);
+    redrawTile(screen, pos.x, pos.y, layer_n, clear);
+
+    for (const auto &enemy : enemies) {
+        Point e_pos = enemy->getPos();
+        Point e_prev_pos = enemy->getPrevPos();
+        redrawTile(screen, e_pos.x, e_pos.y, layer_n, clear);
+        redrawTile(screen, e_prev_pos.x, e_prev_pos.y, layer_n, clear);
+    }
 }
 
 void Field::redrawTile(Image &screen, int x, int y, int layer, bool clear) {
@@ -64,19 +85,44 @@ void Field::redrawTile(Image &screen, int x, int y, int layer, bool clear) {
     }
 }
 
+bool Field::isValid(Point p) {
+    if (p.x >= 0 && p.x < GRID_SIZE && p.y >= 0 && p.y < GRID_SIZE 
+            && grid[p.y * GRID_SIZE + p.x] != cwall 
+            && grid[p.y * GRID_SIZE + p.x] != cvoid)
+    {
+        for (const auto &enemy : enemies) {
+            Point enemy_pos = enemy->getPos();
+            if (enemy_pos.x == p.x && enemy_pos.y == p.y) return false;
+        }
+        return true;
+    }
+    return false;
+    
+}
+
 void Field::initLevel() {
     for (int y = 0; y < gridSize; y++) {
         for (int x = 0; x < gridSize; x++) {
             char c = grid[y*gridSize + x];
-            if (c == '_') {
+            if (c == cfloor) {
                 putFloor(x, y);
-            } else if (c == '#') {
+            } else if (c == cwall) {
                 putWall(x, y);
-            } else if (c == '.') {
+            } else if (c == cvoid) {
                 putVoid(x, y);
             }     
         }
     } 
+}
+
+void Field::spawnEnemies() {
+    for (int i = 0; i < 5; i++) {
+        Enemy_Slime *sl = new Enemy_Slime(this);
+        if (sl->spawn(grid, player.getPos(), enemies))
+            enemies.push_back(sl);
+        else delete sl;
+    }
+    
 }
 
 char* Field::getNeighbors(int x, int y) {
@@ -105,7 +151,7 @@ char* Field::getNeighbors(int x, int y) {
 void Field::putVoid(int x, int y) {
     char *neig = getNeighbors(x, y);
 
-    if (neig[2] == '#' && !(neig[6] == '.' || neig[5] == '.')) 
+    if (neig[2] == cwall && !(neig[6] == cvoid || neig[5] == cvoid)) 
         level_l2.putTile(x,y, sprites->wall_t);
 
     free(neig);
@@ -115,11 +161,11 @@ void Field::putFloor(int x, int y) {
     char *neig = getNeighbors(x, y);
 
     int k = rand()%100;
-    if (k < 40)
+    if (k < 55)
         level_l1.putTile(x,y, sprites->floor);
-    else if (k < 60)
+    else if (k < 75)
         level_l1.putTile(x,y, sprites->floor_crack1);
-    else if (k < 80)
+    else if (k < 95)
         level_l1.putTile(x,y, sprites->floor_crack2);
     else if (k < 97)
         level_l1.putTile(x,y, sprites->floor_crack3);
@@ -130,7 +176,7 @@ void Field::putFloor(int x, int y) {
     else 
         level_l1.putTile(x,y, sprites->floor_crack_right);
 
-    if (neig[2] == '#') 
+    if (neig[2] == cwall) 
         level_l2.putTile(x,y, sprites->wall_t);
 
     free(neig);
@@ -139,13 +185,13 @@ void Field::putFloor(int x, int y) {
 void Field::putWall(int x, int y) {
     char *neig = getNeighbors(x, y);
         
-    if (neig[3] == '.')
-        if (neig[2] == '.')
+    if (neig[3] == cvoid)
+        if (neig[2] == cvoid)
             level_l1.putTile(x,y, sprites->wall_side_rb);
         else
             level_l1.putTile(x,y, sprites->wall_side_r);
-    else if (neig[1] == '.')
-        if (neig[2] == '.')
+    else if (neig[1] == cvoid)
+        if (neig[2] == cvoid)
             level_l1.putTile(x,y, sprites->wall_side_lb);
         else
             level_l1.putTile(x,y, sprites->wall_side_l);
@@ -160,21 +206,21 @@ void Field::putWall(int x, int y) {
     }
 
 
-    if ((neig[3] == '#' && neig[5] == '#' && neig[1] == '_')
-            || (neig[3] == '#' && neig[5] == '_' && neig[1] == '_')
-            && neig[2] == '#')
+    if ((neig[3] == cwall && neig[5] == cwall && neig[1] == cfloor)
+            || (neig[3] == cwall && neig[5] == cfloor && neig[1] == cfloor)
+            && neig[2] == cwall)
         level_l1.putTile(x,y, sprites->wall_side_r);
-    else if ((neig[1] == '#' && neig[6] == '#' && neig[3] == '_')
-            || (neig[1] == '#' && neig[6] == '_' && neig[3] == '_') 
-            && neig[2] == '#')
+    else if ((neig[1] == cwall && neig[6] == cwall && neig[3] == cfloor)
+            || (neig[1] == cwall && neig[6] == cfloor && neig[3] == cfloor) 
+            && neig[2] == cwall)
         level_l1.putTile(x,y, sprites->wall_side_l);
 
 
-    if (((neig[1] == '#' && neig[6] == '#' && neig[3] == '.') 
-            || (neig[3] == '#' && neig[5] == '#' && neig[1] == '.')
-            || (neig[3] == '_' && neig[5] == '#' && neig[1] == '.')
-            || (neig[1] == '_' && neig[6] == '#' && neig[3] == '.')) 
-            && neig[2] == '#')
+    if (((neig[1] == cwall && neig[6] == cwall && neig[3] == cvoid) 
+            || (neig[3] == cwall && neig[5] == cwall && neig[1] == cvoid)
+            || (neig[3] == cfloor && neig[5] == cwall && neig[1] == cvoid)
+            || (neig[1] == cfloor && neig[6] == cwall && neig[3] == cvoid)) 
+            && neig[2] == cwall)
         level_l2.putTile(x,y, sprites->wall_t);
 
     free(neig);

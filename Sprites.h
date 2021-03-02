@@ -4,6 +4,7 @@
 #include <string>
 #include "Image.h"
 #include "config.h"
+#include "TextureSet.h"
 
 class Sprites
 {
@@ -46,8 +47,9 @@ public:
     Image floor_crack_left = Image(TILE_SIZE, TILE_SIZE, 4);
     Image floor_crack_right = Image(TILE_SIZE, TILE_SIZE, 4);
 
-    Image hero_t = Image(TILE_SIZE, TILE_SIZE, 4);
-    Image hero = Image(TILE_SIZE, TILE_SIZE, 4);
+    TextureSet *hero;
+    TextureSet *enemy_slime;
+
 };
 
 #endif

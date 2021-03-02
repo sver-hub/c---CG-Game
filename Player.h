@@ -1,10 +1,15 @@
+#ifndef PLAYER
+#define PLAYER
+
 #include "Entity.h"
 
 class Player: public Entity {
 
     public:
 
-    Player(Point position) : Entity(position) {}
+    Player(Point position);
 
-    void move(MovementDir dir, char *grid);
+    bool move(MovementDir dir, char *grid);
 };
+
+#endif

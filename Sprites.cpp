@@ -2,9 +2,8 @@
       
 Sprites* Sprites::singleton_= nullptr;;
 
-Sprites *Sprites::GetInstance()
-{
-    if(singleton_==nullptr){
+Sprites *Sprites::GetInstance() {
+    if (singleton_== nullptr){
         singleton_ = new Sprites();
     }
     return singleton_;
@@ -36,6 +35,8 @@ void Sprites::load(Image &tiles) {
     floor_crack_left.initTile(tiles, 16,400);
     floor_crack_right.initTile(tiles, 32,400);
 
-    hero_t.initTile(tiles, 144,400);
-    hero.initTile(tiles, 144,384);
+    hero = new TextureSet(tiles, 144, 384);
+
+    enemy_slime = new TextureSet(tiles, 432, 384);
+    
     }

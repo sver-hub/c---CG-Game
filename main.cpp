@@ -146,7 +146,7 @@ int main(int argc, char** argv) {
 
 	Image screenBuffer(SCREEN_WIDTH, SCREEN_HEIGHT, 4);
 
-    Field field("resources/level1.txt");
+    Field field("resources/level2.txt");
   
     field.draw(screenBuffer);
 

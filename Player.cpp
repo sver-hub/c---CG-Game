@@ -1,49 +1,26 @@
 #include "Player.h"
 #include "config.h"
+#include "Sprites.h"
 
-void Player::move(MovementDir dir, char *grid) {
+Player::Player(Point position) : Entity(position) {
+    Sprites *sprites = Sprites::GetInstance();
+    textures = sprites->hero;
+}
+
+bool Player::move(MovementDir dir, char *grid) {
     int x = pos.x;
     int y = pos.y;
+    bool moved = false;
 
-    switch(dir){
-        case MovementDir::UP:
-            if (y > 0 && grid[(y-1)*GRID_SIZE + x] != '#') {
-                updatePrevPos();
-                pos.y--;
-                animationState = 14;
-            }
-            break;
+    if (   (dir == MovementDir::UP    && y > 0             && grid[(y-1)*GRID_SIZE + x] != cwall)
+        || (dir == MovementDir::DOWN  && y < GRID_SIZE - 1 && grid[(y+1)*GRID_SIZE + x] != cwall)
+        || (dir == MovementDir::LEFT  && x > 0             && grid[y*GRID_SIZE + x - 1] != cwall)
+        || (dir == MovementDir::RIGHT && x < GRID_SIZE - 1 && grid[y*GRID_SIZE + x + 1] != cwall)) {
 
-        case MovementDir::DOWN:
-            if (y < GRID_SIZE - 1 && grid[(y+1)*GRID_SIZE + x] != '#') {
-                updatePrevPos();
-                pos.y++;
-                animationState = 14;
-            }
-            break;
-
-        case MovementDir::LEFT:
-            if (x > 0 && grid[y*GRID_SIZE + x - 1] != '#') {
-                turnDir = dir; 
-                updatePrevPos();
-                pos.x--;
-                animationState = 14;
-            }
-            break;
-
-        case MovementDir::RIGHT:
-            if (x < GRID_SIZE - 1 && grid[y*GRID_SIZE + x + 1] != '#') {
-                turnDir = dir;
-                updatePrevPos();
-                pos.x++;
-                animationState = 14;
-            }
-            break;
-
-        default:
-            return;
-      
+        makeMove(dir);
+        moved = true;
     }
 
-    direction = dir;
+    setDirection(dir);
+    return moved;
 }

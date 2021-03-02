@@ -1,5 +1,9 @@
+#ifndef ENTITY
+#define ENTITY
+
 #include "Image.h"
 #include "config.h"
+#include "TextureSet.h"
 
 struct Point {
     int x;
@@ -14,19 +18,24 @@ enum class MovementDir {
 };
 
 class Entity {
-    
-    Image texture_r;
-    Image texture_r_t;
-    Image texture_l = Image(TILE_SIZE, TILE_SIZE, 4);
-    Image texture_l_t = Image(TILE_SIZE, TILE_SIZE, 4);
 
     protected:
+    TextureSet *textures;
+
+    static Point dirToVec(MovementDir dir);
+
+    void makeMove(MovementDir dir);
+
+    void setDirection(MovementDir dir);
+
+    void drawIdle(Image &screen);
 
     Point pos;
     Point prev_pos;
     MovementDir direction = MovementDir::LEFT;
     MovementDir turnDir = MovementDir::LEFT;
     int animationState = 0;
+    int idleState = 0;
 
     void updatePrevPos() { prev_pos.x = pos.x; prev_pos.y = pos.y; }
 
@@ -36,17 +45,13 @@ class Entity {
 
     ~Entity() {}
 
-    void setTextures(Image &texture_bottom, Image &texture_top);
-
     Point getPos() { return pos; }
 
     Point getPrevPos() { return prev_pos; }
-
-    Point dirToVec();
-
-    bool moved() { return !(pos.x == prev_pos.x && pos.y == prev_pos.y); }
 
     bool looksLeft() { return turnDir == MovementDir::LEFT; }
 
     void draw(Image &screen);    
 };
+
+#endif
