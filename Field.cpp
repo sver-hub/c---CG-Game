@@ -3,10 +3,13 @@
 
 #include "Field.h"
 #include <fstream>
+#include <iostream>
 
 
 Field::Field(const std::string &level): gridSize(GRID_SIZE), tileSize(TILE_SIZE) {
     grid = new char[gridSize*gridSize];
+    enemies = std::vector<Enemy*>();
+    traps = std::vector<Trap*>();
     sprites = Sprites::GetInstance();
 
     srand((unsigned)time(NULL));
@@ -77,6 +80,7 @@ void Field::redrawLayer(Image &screen, int layer_n) {
     redrawTile(screen, prev.x, prev.y, layer_n, clear);
     redrawTile(screen, pos.x, pos.y, layer_n, clear);
 
+    // std::cout << enemies.size() << std::endl;
     for (const auto &enemy : enemies) {
         Point e_pos = enemy->getPos();
         Point e_prev_pos = enemy->getPrevPos();
@@ -100,13 +104,16 @@ void Field::redrawTile(Image &screen, int x, int y, int layer, bool clear) {
 }
 
 bool Field::isValid(Point p) {
+    std::cout << this->enemies.size() << std::endl;
     if (p.x >= 0 && p.x < GRID_SIZE && p.y >= 0 && p.y < GRID_SIZE 
             && grid[p.y * GRID_SIZE + p.x] != cwall 
             && grid[p.y * GRID_SIZE + p.x] != cvoid)
     {
+        // std::cout << player->getPos().x << " " << player->getPos().y << std::endl;
         if (p == player->getPos()) return false;
 
         for (const auto &enemy : enemies) {
+            // std::cout << enemy->getPos().x << " " << enemy->getPos().y << std::endl;
             if (p == enemy->getPos()) return false;
         }
         return true;
@@ -150,9 +157,12 @@ void Field::spawnEnemies() {
         else if (i < 9) sl = new Enemy_Devil(this);
         else if (i < 10) sl = new Enemy_Angel(this);
 
-        if (sl->spawn())
+        if (sl->spawn()) {
             enemies.push_back(sl);
-        else delete sl;
+        }
+        else {
+            delete sl;
+        }
     }
     
 }

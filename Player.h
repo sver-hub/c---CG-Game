@@ -10,6 +10,8 @@ class Player: public Entity {
     Player(Field *_field, Point position);
 
     bool move(MovementDir dir);
+
+    ~Player() {}
 };
 
 #endif

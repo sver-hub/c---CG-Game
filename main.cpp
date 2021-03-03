@@ -118,7 +118,7 @@ int initGL() {
 void doFadeOut(Image &screen) {
     for (int y = 0; y < SCREEN_HEIGHT; y++) {
         for (int x = 0; x < SCREEN_WIDTH; x++) {
-            screen.multPixel(x,y, 0.92f);
+            screen.multPixel(x,y, 1.0f * fadeState / fadeDelay);
         }
     }
 }
