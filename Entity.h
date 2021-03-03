@@ -8,7 +8,6 @@
 
 class Field;
 
-
 class Entity {
 
     protected:
@@ -19,12 +18,12 @@ class Entity {
 
     void drawIdle(Image &screen);
 
-    Field *field;
     Point pos;
     Point prev_pos;
     MovementDir direction = MovementDir::LEFT;
     MovementDir turnDir = MovementDir::LEFT;
     TextureSet *textures;
+    Field* field;
     int animationState = 0;
     int idleState = 0;
 
@@ -32,7 +31,7 @@ class Entity {
 
     public:
 
-    Entity(Field *_field, Point position): pos(position), prev_pos(position), field(_field) {}
+    Entity(Field* _field, Point position): pos(position), prev_pos(position), field(_field) {}
 
     ~Entity() {}
 

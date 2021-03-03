@@ -32,6 +32,8 @@ class Image {
     void  clearTile(int x, int y);
     void  initTile(Image &from, int x, int y);
     void  mirror(Image &from);
+    void  initWord(Image &from, int x, int y, int len_x, int len_y);
+    void putScreen(Image& screen);
 
     ~Image();
 

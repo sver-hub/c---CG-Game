@@ -1,7 +1,9 @@
 #include "common.h"
 #include "Image.h"
 #include "Field.h"
+#include "FadeController.h"
 #include <iostream>
+#include <vector>
 
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
@@ -19,10 +21,10 @@ GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 GLfloat sinceLastAction = 0.0f;
 GLfloat frameTimer = .0f;
-bool fadeOut = false;
-bool fadeIn = false;
-bool paused = false;
-int fadeState = 0;
+FadeController fade;
+Sprites *sprites;
+std::vector<Field*> levels;
+int currentLevel = 0;
 
 
 void OnKeyboardPressed(GLFWwindow* window, int key, int scancode, int action, int mode) {
@@ -118,16 +120,38 @@ int initGL() {
 void doFadeOut(Image &screen) {
     for (int y = 0; y < SCREEN_HEIGHT; y++) {
         for (int x = 0; x < SCREEN_WIDTH; x++) {
-            screen.multPixel(x,y, 1.0f * fadeState / fadeDelay);
+            screen.multPixel(x,y, fade.outCurve());
         }
+    }
+    fade.state--;
+
+    if (fade.finished()) {
+        if (fade.showLabel) {
+            screen.putScreen(currentLevel == 0 ? sprites->level1 : sprites->level2);
+        } else {
+            levels[currentLevel]->draw(screen);
+        }
+        fade.setFadedOut();
     }
 }
 
 void doFadeIn(Image &screen) {
+    if (fade.showLabel) {
+        screen.putScreen(currentLevel == 0 ? sprites->level1 : sprites->level2);
+    } else {
+        levels[currentLevel]->draw(screen);
+        levels[currentLevel]->redraw(screen);
+    }
+
     for (int y = 0; y < SCREEN_HEIGHT; y++) {
         for (int x = 0; x < SCREEN_WIDTH; x++) {
-            screen.multPixel(x,y, (1.0f * fadeDelay - fadeState)/fadeDelay);
+            screen.multPixel(x,y, fade.inCurve());
         }
+    }
+    fade.state--;
+
+    if (fade.finished()) {
+        fade.setFadedIn();
     }
 }
 
@@ -163,13 +187,17 @@ int main(int argc, char** argv) {
   
   // initialize
 	Image tiles("./resources/tiles.png");
-    Sprites::GetInstance()->load(tiles);
+    Image words("./resources/words.png");
+    sprites = Sprites::GetInstance();
+    sprites->load(tiles, words);
 
 	Image screenBuffer(SCREEN_WIDTH, SCREEN_HEIGHT, 4);
 
-    Field field("resources/level1.txt");
+    levels.push_back(new Field("resources/level1.txt"));
+    levels.push_back(new Field("resources/level2.txt"));
   
-    field.draw(screenBuffer);
+    // levels[currentLevel]->draw(screenBuffer);
+    screenBuffer.putScreen(sprites->level1);
 
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);  GL_CHECK_ERRORS;
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f); GL_CHECK_ERRORS;
@@ -184,50 +212,26 @@ int main(int argc, char** argv) {
 
         glfwPollEvents();
     
-        if (!paused) processPlayerMovement(field);
+        if (!fade.inProgress()) processPlayerMovement(*levels[currentLevel]);
 
         if (frameTimer < frameTime) continue;
 
-        if (!paused) field.redraw(screenBuffer);
+        if (!fade.inProgress()) levels[currentLevel]->redraw(screenBuffer);
 
-        if (fadeOut) {
-            doFadeOut(screenBuffer);
-            fadeState--;
+        if (fade.out) doFadeOut(screenBuffer); 
 
-            if (fadeState == 0) {
-                field.draw(screenBuffer);
-                fadeOut = false;
-                fadeIn = true;
-                fadeState = fadeDelay;
-            }
-        }
-
-        if (fadeIn) {
-            field.draw(screenBuffer);
-            field.redraw(screenBuffer);
-            doFadeIn(screenBuffer);
-            fadeState--;
-
-            if (fadeState == 0) {
-                fadeIn = false;
-                paused = false;
-            }
-        }
+        if (fade.in) doFadeIn(screenBuffer);
         
         frameTimer = .0f;
 
-        
-        
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); GL_CHECK_ERRORS;
         glDrawPixels (SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, screenBuffer.getData()); GL_CHECK_ERRORS;
 
         glfwSwapBuffers(window);
 
-        if (field.isExited()) {
-            fadeOut = true;
-            paused = true;
-            fadeState = fadeDelay;
-            field = Field("resources/level2.txt");
+        if (levels[currentLevel]->isExited()) {
+            fade.start();
+            currentLevel++;
         }
 	}
 

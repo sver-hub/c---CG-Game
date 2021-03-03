@@ -10,7 +10,7 @@ Sprites *Sprites::GetInstance() {
 }
 
 
-void Sprites::load(Image &tiles) {
+void Sprites::load(Image &tiles, Image &words) {
         
     wall_t.initTile(tiles, 16,496);
     wall.initTile(tiles, 16,480);
@@ -48,4 +48,9 @@ void Sprites::load(Image &tiles) {
     enemy_devil = new TextureSet(tiles, 368, 160 - y_shift);
     enemy_angel = new TextureSet(tiles, 368, 128 - y_shift);
     
+    victory.initWord(words, 16, 624, 288, 56);
+    level1.initWord(words, 16, 480, 256, 56);
+    level2.initWord(words, 16, 320, 256, 56);
+    level3.initWord(words, 16, 160, 256, 56);
+    game_over.initWord(words, 0, 0, 360, 56);
 }

@@ -4,15 +4,14 @@
 #include "Field.h"
 #include <iostream>
 
-Player::Player(Field *_field, Point position) : Entity(_field, position) {
+Player::Player(Field* _field, Point position) : Entity(_field, position) {
     Sprites *sprites = Sprites::GetInstance();
     textures = sprites->hero;
 }
 
 bool Player::move(MovementDir dir) {
     bool moved = false;
-
-std::cout << field << std::endl;
+   
     if (field->isValid(pos + dirToVec(dir))) {
         makeMove(dir);
         moved = true;

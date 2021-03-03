@@ -48,6 +48,24 @@ void Image::initTile(Image &from, int x, int y) {
     }
 }
 
+void Image::initWord(Image &from, int x, int y, int len_x, int len_y) {
+    int x_offset = (SCREEN_WIDTH - len_x)/2;
+    int y_offset = (SCREEN_HEIGHT - len_y)/2;
+    for (int j = 0; j < len_y; j++) {
+        for (int i = 0; i < len_x; i++) {      
+            putPixel(x_offset + i, y_offset + j, from.getPixel(x + 2*i, y + 2*j));
+        }
+    }
+}
+
+void Image::putScreen(Image& screen) {
+    for (int j = 0; j < SCREEN_HEIGHT; j++) {
+        for (int i = 0; i < SCREEN_WIDTH; i++) {      
+            putPixel(i, j, screen.getPixel(i, j));
+        }
+    }
+}
+
 void Image::mirror(Image &from) {
     for (int j = 0; j < TILE_SIZE; j++) {
         for (int i = 0; i < TILE_SIZE; i++) {      

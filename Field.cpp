@@ -80,7 +80,6 @@ void Field::redrawLayer(Image &screen, int layer_n) {
     redrawTile(screen, prev.x, prev.y, layer_n, clear);
     redrawTile(screen, pos.x, pos.y, layer_n, clear);
 
-    // std::cout << enemies.size() << std::endl;
     for (const auto &enemy : enemies) {
         Point e_pos = enemy->getPos();
         Point e_prev_pos = enemy->getPrevPos();
@@ -104,16 +103,13 @@ void Field::redrawTile(Image &screen, int x, int y, int layer, bool clear) {
 }
 
 bool Field::isValid(Point p) {
-    std::cout << this->enemies.size() << std::endl;
     if (p.x >= 0 && p.x < GRID_SIZE && p.y >= 0 && p.y < GRID_SIZE 
             && grid[p.y * GRID_SIZE + p.x] != cwall 
             && grid[p.y * GRID_SIZE + p.x] != cvoid)
     {
-        // std::cout << player->getPos().x << " " << player->getPos().y << std::endl;
         if (p == player->getPos()) return false;
 
         for (const auto &enemy : enemies) {
-            // std::cout << enemy->getPos().x << " " << enemy->getPos().y << std::endl;
             if (p == enemy->getPos()) return false;
         }
         return true;
@@ -249,11 +245,13 @@ void Field::putWall(int x, int y) {
 
 
     if ((neig[3] == cwall && neig[5] == cwall && neig[1] == cfloor)
-            || (neig[3] == cwall && neig[5] == cfloor && neig[1] == cfloor)
+            || (neig[3] == cwall && (neig[5] == cfloor || neig[5] == ctrap) 
+            && (neig[1] == cfloor || neig[1] == ctrap))
             && neig[2] == cwall)
         level_l1.putTile(x,y, sprites->wall_side_r);
     else if ((neig[1] == cwall && neig[6] == cwall && neig[3] == cfloor)
-            || (neig[1] == cwall && neig[6] == cfloor && neig[3] == cfloor) 
+            || (neig[1] == cwall && (neig[6] == cfloor || neig[6] == ctrap) 
+            && (neig[3] == cfloor || neig[3] == ctrap)) 
             && neig[2] == cwall)
         level_l1.putTile(x,y, sprites->wall_side_l);
 

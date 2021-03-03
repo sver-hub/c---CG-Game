@@ -4,13 +4,15 @@
 #include "Entity.h"
 #include <vector>
 
+class Field;
+
 class Enemy: public Entity {
 
     protected:
     int visionRadius;
 
 
-    bool seesPlayer();
+    bool seesPlayer(Point playerPos);
 
     bool hasEnemiesNearby(Point position);
 

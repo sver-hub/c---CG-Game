@@ -12,7 +12,7 @@ constexpr int SCREEN_WIDTH = GRID_SIZE * TILE_SIZE;
 constexpr int fps = 30;
 constexpr float turnDelay = .3f;
 
-constexpr int fadeDelay = 40;
+
 
 constexpr char cwall = '#';
 constexpr char cvoid = '.';

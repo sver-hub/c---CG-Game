@@ -1,15 +1,14 @@
 #include "Enemy.h"
 #include "Field.h"
 
-bool Enemy::seesPlayer() {
-    Point playerPos = field->getPlayer()->getPos();
+bool Enemy::seesPlayer(Point playerPos) {
     return ((abs(playerPos.x - pos.x) <= visionRadius) && (abs(playerPos.y - pos.y) <= visionRadius));
 }
 
 void Enemy::move() {
     Point playerPos = field->getPlayer()->getPos();
 
-    if (seesPlayer()) {
+    if (seesPlayer(playerPos)) {
         MovementDir randDir = randomDir();
         for (int i = 0; i < 4; i++) {
             MovementDir dir = randDir;
@@ -45,7 +44,7 @@ bool Enemy::spawn() {
     for (int i = 0; i < 1000; i++) {
         int x = rand() % GRID_SIZE;
         int y = rand() % GRID_SIZE;
-        if (field->getGrid()[y * GRID_SIZE + x] != cfloor || seesPlayer() || hasEnemiesNearby(Point(x,y))) 
+        if (field->getGrid()[y * GRID_SIZE + x] != cfloor || seesPlayer(playerPos) || hasEnemiesNearby(Point(x,y))) 
             continue;
         
         pos.x = x;
