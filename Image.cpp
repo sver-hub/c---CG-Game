@@ -34,6 +34,12 @@ Image::Image(int a_width, int a_height, int a_channels) {
     }
 }
 
+void  Image::multPixel(int x, int y, float scale) {
+    data[width* y + x].r *= scale;
+    data[width* y + x].g *= scale;
+    data[width* y + x].b *= scale;
+}
+
 void Image::initTile(Image &from, int x, int y) {
     for (int j = 0; j < TILE_SIZE; j++) {
         for (int i = 0; i < TILE_SIZE; i++) {      

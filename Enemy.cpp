@@ -10,7 +10,7 @@ void Enemy::move() {
     Point playerPos = field->getPlayer()->getPos();
 
     if (seesPlayer()) {
-        MovementDir randDir = static_cast<MovementDir>(rand()%4);
+        MovementDir randDir = randomDir();
         for (int i = 0; i < 4; i++) {
             MovementDir dir = randDir;
             dir = static_cast<MovementDir>((static_cast<int>(dir) + i)%4);
@@ -28,15 +28,10 @@ void Enemy::move() {
         return;
     } else {
         MovementDir dir;
-        int k = rand()%7;
+        int k = rand()%2;
+        if (k == 0)  return;
 
-        if (k < 4) {
-            dir = static_cast<MovementDir>(k);
-        }
-        else {              //idle
-            return;
-        }
-        
+        dir = randomDir();
         Point goTo = pos + dirToVec(dir);
         if (field->isValid(goTo))
             makeMove(dir);

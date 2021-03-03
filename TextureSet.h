@@ -51,7 +51,6 @@ class TextureSet {
         top_l_idle_3.mirror(top_r_idle_3);
     }
 
-
 };
 
 #endif

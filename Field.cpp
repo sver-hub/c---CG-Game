@@ -24,11 +24,20 @@ Field::Field(const std::string &level): gridSize(GRID_SIZE), tileSize(TILE_SIZE)
     spawnEnemies();     
 }
 
+Field::~Field() {
+    delete grid;
+}
+
 void Field::ProcessInput(MovementDir dir) {
-    if (player->move(dir, grid)) {
-        
+    if (player->move(dir)) {
+        if (exitPos == player->getPos()) {
+            exited = true;
+            return;
+        }
+        checkTraps(player->getPos());
         for (const auto &enemy : enemies) {
             enemy->move();
+            checkTraps(enemy->getPos());
         }
     }
 }
@@ -122,6 +131,8 @@ void Field::initLevel() {
             } else if (c == ctrap) {
                 putTrap(x, y);
             } else if (c == cexit) {
+                exitPos.x = x;
+                exitPos.y = y;
                 level_l1.putTile(x, y, sprites->exit);
             }
         }
@@ -251,7 +262,13 @@ void Field::putWall(int x, int y) {
 void Field::putTrap(int x, int y) {
     Trap *t = new Trap(Point(x, y));
     traps.push_back(t);
-    //level_l1.putTile(x, y, sprites->trap_2);
+}
+
+void Field::checkTraps(Point p) {
+    for (const auto &trap : traps) {
+        trap->check(p, enemies.size() + 1);
+    }
+
 }
 
 #endif

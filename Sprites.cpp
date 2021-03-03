@@ -48,4 +48,4 @@ void Sprites::load(Image &tiles) {
     enemy_devil = new TextureSet(tiles, 368, 160 - y_shift);
     enemy_angel = new TextureSet(tiles, 368, 128 - y_shift);
     
-    }
+}

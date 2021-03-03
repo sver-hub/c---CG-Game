@@ -1,6 +1,7 @@
 #include "common.h"
 #include "Image.h"
 #include "Field.h"
+#include <iostream>
 
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
@@ -18,6 +19,10 @@ GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 GLfloat sinceLastAction = 0.0f;
 GLfloat frameTimer = .0f;
+bool fadeOut = false;
+bool fadeIn = false;
+bool paused = false;
+int fadeState = 0;
 
 
 void OnKeyboardPressed(GLFWwindow* window, int key, int scancode, int action, int mode) {
@@ -110,6 +115,22 @@ int initGL() {
 	return 0;
 }
 
+void doFadeOut(Image &screen) {
+    for (int y = 0; y < SCREEN_HEIGHT; y++) {
+        for (int x = 0; x < SCREEN_WIDTH; x++) {
+            screen.multPixel(x,y, 0.92f);
+        }
+    }
+}
+
+void doFadeIn(Image &screen) {
+    for (int y = 0; y < SCREEN_HEIGHT; y++) {
+        for (int x = 0; x < SCREEN_WIDTH; x++) {
+            screen.multPixel(x,y, (1.0f * fadeDelay - fadeState)/fadeDelay);
+        }
+    }
+}
+
 int main(int argc, char** argv) {
 	if(!glfwInit())
         return -1;
@@ -146,7 +167,7 @@ int main(int argc, char** argv) {
 
 	Image screenBuffer(SCREEN_WIDTH, SCREEN_HEIGHT, 4);
 
-    Field field("resources/level2.txt");
+    Field field("resources/level1.txt");
   
     field.draw(screenBuffer);
 
@@ -163,18 +184,51 @@ int main(int argc, char** argv) {
 
         glfwPollEvents();
     
-        processPlayerMovement(field);
+        if (!paused) processPlayerMovement(field);
 
         if (frameTimer < frameTime) continue;
 
-        field.redraw(screenBuffer);
-        // std::cout << "frame" << std::endl;
+        if (!paused) field.redraw(screenBuffer);
+
+        if (fadeOut) {
+            doFadeOut(screenBuffer);
+            fadeState--;
+
+            if (fadeState == 0) {
+                field.draw(screenBuffer);
+                fadeOut = false;
+                fadeIn = true;
+                fadeState = fadeDelay;
+            }
+        }
+
+        if (fadeIn) {
+            field.draw(screenBuffer);
+            field.redraw(screenBuffer);
+            doFadeIn(screenBuffer);
+            fadeState--;
+
+            if (fadeState == 0) {
+                fadeIn = false;
+                paused = false;
+            }
+        }
+        
         frameTimer = .0f;
+
+        
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); GL_CHECK_ERRORS;
         glDrawPixels (SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, screenBuffer.getData()); GL_CHECK_ERRORS;
 
         glfwSwapBuffers(window);
+
+        if (field.isExited()) {
+            fadeOut = true;
+            paused = true;
+            fadeState = fadeDelay;
+            field = Field("resources/level2.txt");
+        }
 	}
 
 	glfwTerminate();

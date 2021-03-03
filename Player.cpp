@@ -8,9 +8,7 @@ Player::Player(Field *_field, Point position) : Entity(_field, position) {
     textures = sprites->hero;
 }
 
-bool Player::move(MovementDir dir, char *grid) {
-    int x = pos.x;
-    int y = pos.y;
+bool Player::move(MovementDir dir) {
     bool moved = false;
 
     if (field->isValid(pos + dirToVec(dir))) {

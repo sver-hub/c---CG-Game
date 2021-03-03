@@ -68,26 +68,6 @@ void Entity::drawIdle(Image &screen) {
 
 }
 
-Point Entity::dirToVec(MovementDir dir) {
-    switch (dir)
-    {
-    case MovementDir::LEFT:
-        return Point(-1, 0);
-
-    case MovementDir::RIGHT:
-        return Point(1, 0);
-    
-    case MovementDir::UP:
-        return Point(0, -1);
-
-    case MovementDir::DOWN:
-        return Point(0, 1);
-    
-    default:
-        break;
-    }
-}
-
 void Entity::makeMove(MovementDir dir) {
     updatePrevPos();
     animationState = TILE_SIZE - 2;

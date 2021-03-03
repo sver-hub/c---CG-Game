@@ -4,23 +4,14 @@
 #include "Image.h"
 #include "config.h"
 #include "TextureSet.h"
+#include "Structures.h"
 
 class Field;
 
 
-enum class MovementDir {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
-};
-
 class Entity {
 
     protected:
-    TextureSet *textures;
-
-    static Point dirToVec(MovementDir dir);
 
     void makeMove(MovementDir dir);
 
@@ -33,6 +24,7 @@ class Entity {
     Point prev_pos;
     MovementDir direction = MovementDir::LEFT;
     MovementDir turnDir = MovementDir::LEFT;
+    TextureSet *textures;
     int animationState = 0;
     int idleState = 0;
 
@@ -46,11 +38,13 @@ class Entity {
 
     Point getPos() { return pos; }
 
+    void setPos(Point p) { pos = p; }
+
     Point getPrevPos() { return prev_pos; }
 
     bool looksLeft() { return turnDir == MovementDir::LEFT; }
 
-    void draw(Image &screen);    
+    void draw(Image &screen); 
 };
 
 #endif

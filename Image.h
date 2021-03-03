@@ -10,42 +10,6 @@ struct Pixel {
     uint8_t a;
 };
 
-struct Point {
-    int x;
-    int y;
-
-    Point(int _x, int _y) : x(_x), y(_y) {}
-
-    Point operator+(Point other) {
-        return Point(this->x + other.x, this->y + other.y);
-    }
-
-    Point operator-(Point other) {
-        return Point(this->x - other.x, this->y - other.y);
-    }
-
-    void operator+=(Point other) {
-        this->x += other.x;
-        this->y += other.y;
-    }
-
-    void operator-=(Point other) {
-        this->x -= other.x;
-        this->y -= other.y;
-    }
-
-    bool operator==(Point other) {
-        return this->x == other.x && this->y == other.y;
-    }
-
-    int dist(Point other) {
-        return abs(this->x - other.x) + abs(this->y - other.y);
-    }
-};
-
-
-
-
 class Image {
     public:
     explicit Image(const std::string &a_path);
@@ -62,7 +26,8 @@ class Image {
     Pixel* getData()        { return  data; }
 
     Pixel getPixel(int x, int y) { return data[width * y + x];}
-    void  putPixel(int x, int y, const Pixel &pix) {data[width* y + x] = pix; }
+    void  putPixel(int x, int y, const Pixel &pix) { data[width* y + x] = pix; }
+    void  multPixel(int x, int y, float scale);
     void  putTile (int x, int y, Image &tile, int offset_x = 0, int offset_y = 0, int shift_x = 0, int shift_y = 0);
     void  clearTile(int x, int y);
     void  initTile(Image &from, int x, int y);

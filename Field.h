@@ -26,6 +26,8 @@ class Field {
 	Player *player;
     std::vector<Enemy*> enemies;
     std::vector<Trap*> traps;
+    Point exitPos = Point(0,0);
+    bool exited = false;
 
     void spawnEnemies();
 
@@ -36,7 +38,7 @@ class Field {
     public:
     Field(const std::string &level);
 
-    ~Field() { delete grid; }
+    ~Field();
 
     Player* getPlayer() { return player; }
 
@@ -52,6 +54,8 @@ class Field {
 
     bool isValid(Point p);
 
+    bool isExited() { return exited; };
+
     private:
 
     void initLevel();
@@ -65,6 +69,8 @@ class Field {
     void putWall(int x, int y);
 
     void putTrap(int x, int y);
+
+    void checkTraps(Point p);
 
 };
 
