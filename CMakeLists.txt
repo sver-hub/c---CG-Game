@@ -17,6 +17,7 @@ set(SOURCE_FILES
         Enemy.cpp
         Trap.cpp
         LightSource.cpp
+        FireUrn.cpp
         main.cpp)
 
 set(ADDITIONAL_INCLUDE_DIRS

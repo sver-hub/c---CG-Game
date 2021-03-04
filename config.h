@@ -20,6 +20,7 @@ constexpr char cfloor = '_';
 constexpr char cplayer = '@';
 constexpr char cexit = 'x';
 constexpr char ctrap = 'T';
+constexpr char clight = 'L';
 
 constexpr Pixel empty{0, 0, 0, 0};
 constexpr Pixel white{255, 255, 255, 255};

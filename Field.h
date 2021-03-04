@@ -17,6 +17,7 @@
 #include "Enemy_Skelly.h"
 #include "Enemy_Voodoo.h"
 #include "Enemy_Goblin.h"
+#include "FireUrn.h"
 
 class Field {
     char *grid;
@@ -30,7 +31,7 @@ class Field {
 	Player *player;
     std::vector<Enemy*> enemies;
     std::vector<Trap*> traps;
-    std::vector<LightSource*> lightSources;
+    std::vector<FireUrn*> lightSources;
     
     Point exitPos = Point(0,0);
     bool exited = false;
@@ -38,7 +39,7 @@ class Field {
     void spawnEnemies();
 
     public:
-    Field(const std::string &level);
+    Field(const std::string &level, int _vision);
 
     ~Field();
 

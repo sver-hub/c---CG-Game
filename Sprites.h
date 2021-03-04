@@ -22,7 +22,7 @@ public:
    
     static Sprites *GetInstance();
 
-    void load(Image &tiles, Image &words);
+    void load(Image &tiles, Image &words, Image &fire);
 
     Image wall_t = Image(TILE_SIZE, TILE_SIZE, 4);
     Image wall = Image(TILE_SIZE, TILE_SIZE, 4);
@@ -46,6 +46,9 @@ public:
     Image floor_crack4 = Image(TILE_SIZE, TILE_SIZE, 4);
     Image floor_crack_left = Image(TILE_SIZE, TILE_SIZE, 4);
     Image floor_crack_right = Image(TILE_SIZE, TILE_SIZE, 4);
+
+    Image fire = Image(TILE_SIZE, TILE_SIZE, 4);
+
 
     Image exit = Image(TILE_SIZE, TILE_SIZE, 4);
 

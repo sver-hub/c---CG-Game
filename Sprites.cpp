@@ -10,7 +10,7 @@ Sprites *Sprites::GetInstance() {
 }
 
 
-void Sprites::load(Image &tiles, Image &words) {
+void Sprites::load(Image &tiles, Image &words, Image &_fire) {
         
     wall_t.initTile(tiles, 16,496);
     wall.initTile(tiles, 16,480);
@@ -34,6 +34,8 @@ void Sprites::load(Image &tiles, Image &words) {
     floor_crack4.initTile(tiles, 48,416);
     floor_crack_left.initTile(tiles, 16,400);
     floor_crack_right.initTile(tiles, 32,400);
+
+    fire.initTile(_fire, 0, 0);
 
     exit.initTile(tiles, 48,400);
 

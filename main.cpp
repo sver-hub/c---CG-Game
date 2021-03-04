@@ -194,12 +194,13 @@ int main(int argc, char** argv) {
   
 	Image tiles("./resources/tiles.png");
     Image words("./resources/words.png");
+    Image fire("./resources/fire.png");
     sprites = Sprites::GetInstance();
-    sprites->load(tiles, words);
+    sprites->load(tiles, words, fire);
 
 
-    levels.push_back(new Field("resources/level1.txt"));
-    levels.push_back(new Field("resources/level2.txt"));
+    levels.push_back(new Field("resources/level1.txt", 300));
+    levels.push_back(new Field("resources/level2.txt", 300));
 
 	Image screenBuffer(SCREEN_WIDTH, SCREEN_HEIGHT, 4);
     screenBuffer.putScreen(sprites->level1);

@@ -13,8 +13,6 @@ class Player: public Entity {
 
     bool move(MovementDir dir);
 
-    // void draw(Image &screen, CameraController camera);
-
     ~Player() {}
 };
 

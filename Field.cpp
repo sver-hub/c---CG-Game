@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-Field::Field(const std::string &level): gridSize(GRID_SIZE), tileSize(TILE_SIZE), visionRadius(300) {
+Field::Field(const std::string &level, int _vision): gridSize(GRID_SIZE), tileSize(TILE_SIZE), visionRadius(_vision) {
     grid = new char[gridSize*gridSize];
     enemies = std::vector<Enemy*>();
     traps = std::vector<Trap*>();
@@ -66,9 +66,9 @@ void Field::draw(Image &screen) {
         enemy->draw(screen, camera);
     }
 
-    // for (const auto &ls : lightSources) {
-    //     ls->draw(screen);
-    // }
+    for (const auto &ls : lightSources) {
+        ls->draw(screen, camera);
+    }
 
     for (int j = 0; j < SCREEN_HEIGHT; j++) {
         for (int i = 0; i < SCREEN_WIDTH; i++) {
@@ -80,21 +80,14 @@ void Field::draw(Image &screen) {
         }
     }
 
-    for (int j = 0; j < SCREEN_HEIGHT; j++) {
-        for (int i = 0; i < SCREEN_WIDTH; i++) {
-            float dist = Point(i,j).dist(playerSpritePos - Point(camera.x0, camera.y0));
-            if (dist > visionRadius*0.9f)
-                screen.multPixel(i, j, 0);
-            else 
-                screen.multPixel(i,j, (visionRadius - dist) * (visionRadius - dist) / (visionRadius * visionRadius));
-        }
-    }
+    LightSource(playerSpritePos, visionRadius).illuminate(screen, camera);
 }
 
 bool Field::isValid(Point p) {
     if (p.x >= 0 && p.x < GRID_SIZE && p.y >= 0 && p.y < GRID_SIZE 
             && grid[p.y * GRID_SIZE + p.x] != cwall 
-            && grid[p.y * GRID_SIZE + p.x] != cvoid)
+            && grid[p.y * GRID_SIZE + p.x] != cvoid
+            && grid[p.y * GRID_SIZE + p.x] != clight)
     {
         if (p == player->getPos()) return false;
 
@@ -126,10 +119,13 @@ void Field::initLevel() {
                 exitPos.x = x;
                 exitPos.y = y;
                 level_l1.putTile(x, y, sprites->exit);
+            } else if (c == clight) {
+                putFloor(x,y);
+                lightSources.push_back(
+                    new FireUrn(Point(x * TILE_SIZE + TILE_SIZE/2, (GRID_SIZE - y) * TILE_SIZE + TILE_SIZE/2)));
             }
         }
     } 
-    lightSources.push_back(new LightSource(Point(20,20)));
 }
 
 void Field::spawnEnemies() {

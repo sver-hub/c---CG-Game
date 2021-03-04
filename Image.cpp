@@ -48,7 +48,7 @@ void Image::addPixel(int x, int y, const Pixel &pix, float scale) {
 
 void Image::initTile(Image &from, int x, int y) {
     for (int j = 0; j < TILE_SIZE; j++) {
-        for (int i = 0; i < TILE_SIZE; i++) {      
+        for (int i = 0; i < TILE_SIZE; i++) {    
             putPixel(i, j, from.getPixel(x + i, y + j));
         }
     }
@@ -88,8 +88,7 @@ void Image::putSprite(int x, int y, Image &sprite, CameraController camera) {
             int h = y - camera.y0 + j + (SCREEN_HEIGHT-2*camera.radius)/2 - TILE_SIZE;
             if (w < 0 || w > SCREEN_WIDTH || h < 0 || h > SCREEN_HEIGHT) continue;
             
-            putPixel(x - camera.x0 + i + (SCREEN_WIDTH-2*camera.radius)/2 ,
-                     y - camera.y0 + j + (SCREEN_HEIGHT-2*camera.radius)/2 - TILE_SIZE, sprite.getPixel(i,j));
+            putPixel(w, h, sprite.getPixel(i,j));
         }
     }
 }
