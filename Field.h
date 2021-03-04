@@ -6,6 +6,7 @@
 #include "Sprites.h"
 #include "Player.h"
 #include <vector>
+#include "LightSource.h"
 #include "Trap.h"
 #include "Enemy.h"
 #include "Enemy_Slime.h"
@@ -26,6 +27,8 @@ class Field {
 	Player *player;
     std::vector<Enemy*> enemies;
     std::vector<Trap*> traps;
+    std::vector<LightSource*> lightSources;
+    
     Point exitPos = Point(0,0);
     bool exited = false;
 

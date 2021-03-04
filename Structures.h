@@ -2,6 +2,7 @@
 #define STRUCTURES
 
 #include <stdlib.h>
+#include <math.h>
 
 struct Point {
     int x;
@@ -31,8 +32,12 @@ struct Point {
         return this->x == other.x && this->y == other.y;
     }
 
-    int dist(Point other) {
+    int distRaw(Point other) {
         return abs(this->x - other.x) + abs(this->y - other.y);
+    }
+
+    float dist(Point other) {
+        return sqrtf(1.0f * (x - other.x) * (x - other.x) + (y - other.y) * (y - other.y));
     }
 };
 

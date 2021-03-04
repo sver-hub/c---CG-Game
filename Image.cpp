@@ -40,6 +40,12 @@ void  Image::multPixel(int x, int y, float scale) {
     data[width* y + x].b *= scale;
 }
 
+void Image::addPixel(int x, int y, const Pixel &pix, float scale) {
+    data[width* y + x].r = (data[width* y + x].r + (uint8_t)(pix.r * scale)) /2;
+    data[width* y + x].g = (data[width* y + x].g + (uint8_t)(pix.g * scale)) /2;
+    data[width* y + x].b = (data[width* y + x].b + (uint8_t)(pix.b * scale)) /2;
+}
+
 void Image::initTile(Image &from, int x, int y) {
     for (int j = 0; j < TILE_SIZE; j++) {
         for (int i = 0; i < TILE_SIZE; i++) {      

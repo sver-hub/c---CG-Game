@@ -44,7 +44,7 @@ bool Enemy::spawn() {
     for (int i = 0; i < 1000; i++) {
         int x = rand() % GRID_SIZE;
         int y = rand() % GRID_SIZE;
-        if (field->getGrid()[y * GRID_SIZE + x] != cfloor || seesPlayer(playerPos) || hasEnemiesNearby(Point(x,y))) 
+        if (field->getGrid()[y * GRID_SIZE + x] != cfloor  || hasEnemiesNearby(Point(x,y))) 
             continue;
         
         pos.x = x;

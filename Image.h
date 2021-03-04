@@ -28,6 +28,7 @@ class Image {
     Pixel getPixel(int x, int y) { return data[width * y + x];}
     void  putPixel(int x, int y, const Pixel &pix) { data[width* y + x] = pix; }
     void  multPixel(int x, int y, float scale);
+    void  addPixel(int x, int y, const Pixel &pix, float scale);
     void  putTile (int x, int y, Image &tile, int offset_x = 0, int offset_y = 0, int shift_x = 0, int shift_y = 0);
     void  clearTile(int x, int y);
     void  initTile(Image &from, int x, int y);

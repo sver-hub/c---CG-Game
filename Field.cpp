@@ -59,6 +59,10 @@ void Field::draw(Image &screen) {
 void Field::redraw(Image &screen) {
     redrawLayer(screen, 1);
 
+    for (const auto &ls : lightSources) {
+        ls->clear(screen, level_l1);
+    }
+
     for (const auto &trap: traps) {
         trap->draw(screen);
     }
@@ -67,6 +71,10 @@ void Field::redraw(Image &screen) {
 
     for (const auto &enemy : enemies) {
         enemy->draw(screen);
+    }
+
+    for (const auto &ls : lightSources) {
+        ls->draw(screen);
     }
 
     redrawLayer(screen, 2);
@@ -140,6 +148,7 @@ void Field::initLevel() {
             }
         }
     } 
+    lightSources.push_back(new LightSource(Point(20,20)));
 }
 
 void Field::spawnEnemies() {

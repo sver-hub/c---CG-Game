@@ -26,6 +26,7 @@ constexpr Pixel white{255, 255, 255, 255};
 constexpr Pixel red{255, 0, 0, 255};
 constexpr Pixel green{0, 255, 0, 255};
 constexpr Pixel blue{0, 0, 255, 255};
+constexpr Pixel yellow{255, 255, 0, 255};
 constexpr Pixel violet{255, 0, 255, 255};
 
 #endif

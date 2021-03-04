@@ -22,6 +22,7 @@ GLfloat lastFrame = 0.0f;
 GLfloat sinceLastAction = 0.0f;
 GLfloat frameTimer = .0f;
 FadeController fade;
+bool victory = false;
 Sprites *sprites;
 std::vector<Field*> levels;
 int currentLevel = 0;
@@ -126,7 +127,9 @@ void doFadeOut(Image &screen) {
     fade.state--;
 
     if (fade.finished()) {
-        if (fade.showLabel) {
+        if (victory) {
+            screen.putScreen(sprites->victory);
+        } else if (fade.showLabel) {
             screen.putScreen(currentLevel == 0 ? sprites->level1 : sprites->level2);
         } else {
             levels[currentLevel]->draw(screen);
@@ -136,7 +139,9 @@ void doFadeOut(Image &screen) {
 }
 
 void doFadeIn(Image &screen) {
-    if (fade.showLabel) {
+    if (victory) {
+        screen.putScreen(sprites->victory);
+    } else if (fade.showLabel) {
         screen.putScreen(currentLevel == 0 ? sprites->level1 : sprites->level2);
     } else {
         levels[currentLevel]->draw(screen);
@@ -150,7 +155,7 @@ void doFadeIn(Image &screen) {
     }
     fade.state--;
 
-    if (fade.finished()) {
+    if (fade.finished() && !victory) {
         fade.setFadedIn();
     }
 }
@@ -229,9 +234,10 @@ int main(int argc, char** argv) {
 
         glfwSwapBuffers(window);
 
-        if (levels[currentLevel]->isExited()) {
+        if (currentLevel < levels.size() && levels[currentLevel]->isExited()) {
             fade.start();
             currentLevel++;
+            if (currentLevel >= levels.size()) victory = true;
         }
 	}
 
