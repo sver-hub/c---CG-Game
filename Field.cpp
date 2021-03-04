@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-Field::Field(const std::string &level): gridSize(GRID_SIZE), tileSize(TILE_SIZE) {
+Field::Field(const std::string &level): gridSize(GRID_SIZE), tileSize(TILE_SIZE), visionRadius(300) {
     grid = new char[gridSize*gridSize];
     enemies = std::vector<Enemy*>();
     traps = std::vector<Trap*>();
@@ -45,68 +45,49 @@ void Field::ProcessInput(MovementDir dir) {
     }
 }
 
-void Field::draw(Image &screen) {        
-    for (int j = 0; j < screen.getHeight(); j++) {
-        for (int i = 0; i < screen.getWidth(); i++) {
-            screen.putPixel(i,j, level_l1.getPixel(i,j));
-            Pixel pix = level_l2.getPixel(i,j);
-            if (pix.r == 0 && pix.g == 0 && pix.b == 0 && pix.a == 0) continue;
-            screen.putPixel(i,j, level_l2.getPixel(i,j));
+void Field::draw(Image &screen) {   
+    Point playerSpritePos = player->getSpritePos();
+    camera.calculate(playerSpritePos, visionRadius);
+    for (int j = 0; j < SCREEN_HEIGHT; j++) {
+        for (int i = 0; i < SCREEN_WIDTH; i++) {
+            if (camera.isVisible(Point(camera.x0 + i, camera.y0 + j)))
+                screen.putPixel(i + (SCREEN_WIDTH-2*visionRadius)/2, j + (SCREEN_HEIGHT- 2*visionRadius)/2,
+                                level_l1.getPixel(camera.x0 + i,camera.y0 +j));
         }
-    }
-}
-
-void Field::redraw(Image &screen) {
-    redrawLayer(screen, 1);
-
-    for (const auto &ls : lightSources) {
-        ls->clear(screen, level_l1);
     }
 
     for (const auto &trap: traps) {
-        trap->draw(screen);
+        trap->draw(screen, camera);
     }
 
-    player->draw(screen);
+    player->draw(screen, camera);
 
     for (const auto &enemy : enemies) {
-        enemy->draw(screen);
+        enemy->draw(screen, camera);
     }
 
-    for (const auto &ls : lightSources) {
-        ls->draw(screen);
+    // for (const auto &ls : lightSources) {
+    //     ls->draw(screen);
+    // }
+
+    for (int j = 0; j < SCREEN_HEIGHT; j++) {
+        for (int i = 0; i < SCREEN_WIDTH; i++) {
+            if (level_l2.getPixel(camera.x0 + i, camera.y0 + j).isEmpty()) continue;
+
+            if (camera.isVisible(Point(camera.x0 + i, camera.y0 + j)))
+                screen.putPixel(i + (SCREEN_WIDTH-2*visionRadius)/2, j + (SCREEN_HEIGHT- 2*visionRadius)/2, 
+                                level_l2.getPixel(camera.x0 + i,camera.y0 +j));
+        }
     }
 
-    redrawLayer(screen, 2);
-    
-}
-
-void Field::redrawLayer(Image &screen, int layer_n) {
-    Point prev = player->getPrevPos();
-    Point pos = player->getPos();
-    bool clear = layer_n == 1;
-    redrawTile(screen, prev.x, prev.y, layer_n, clear);
-    redrawTile(screen, pos.x, pos.y, layer_n, clear);
-
-    for (const auto &enemy : enemies) {
-        Point e_pos = enemy->getPos();
-        Point e_prev_pos = enemy->getPrevPos();
-        redrawTile(screen, e_pos.x, e_pos.y, layer_n, clear);
-        redrawTile(screen, e_prev_pos.x, e_prev_pos.y, layer_n, clear);
-    }
-}
-
-void Field::redrawTile(Image &screen, int x, int y, int layer, bool clear) {
-    if (clear) {
-        screen.clearTile(x, y);
-        screen.clearTile(x, y-1);
-    }
-    if (layer == 1) {
-        screen.putTile(x, y, level_l1, x, y);
-        screen.putTile(x, y-1, level_l1, x, y-1);
-    } else if (layer == 2) {
-        screen.putTile(x, y, level_l2, x, y);
-        screen.putTile(x, y-1, level_l2, x, y-1);
+    for (int j = 0; j < SCREEN_HEIGHT; j++) {
+        for (int i = 0; i < SCREEN_WIDTH; i++) {
+            float dist = Point(i,j).dist(playerSpritePos - Point(camera.x0, camera.y0));
+            if (dist > visionRadius*0.9f)
+                screen.multPixel(i, j, 0);
+            else 
+                screen.multPixel(i,j, (visionRadius - dist) * (visionRadius - dist) / (visionRadius * visionRadius));
+        }
     }
 }
 

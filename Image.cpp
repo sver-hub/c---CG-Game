@@ -5,7 +5,7 @@
 #include "stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
-
+#include "CameraController.h"
 #include <iostream>
 
 
@@ -59,7 +59,7 @@ void Image::initWord(Image &from, int x, int y, int len_x, int len_y) {
     int y_offset = (SCREEN_HEIGHT - len_y)/2;
     for (int j = 0; j < len_y; j++) {
         for (int i = 0; i < len_x; i++) {      
-            putPixel(x_offset + i, y_offset + j, from.getPixel(x + 2*i, y + 2*j));
+            putPixel(x_offset + i, y_offset + j, from.getPixel(x + 4*i, y + 4*j));
         }
     }
 }
@@ -80,19 +80,30 @@ void Image::mirror(Image &from) {
     }
 }
 
-void Image::putTile (int x, int y, Image &tile, int offset_x, int offset_y, int shift_x, int shift_y) {
+void Image::putSprite(int x, int y, Image &sprite, CameraController camera) {
+    for (int j = 0; j < TILE_SIZE; j++) {
+        for (int i = 0; i < TILE_SIZE; i++) {
+            if (sprite.getPixel(i,j).isEmpty()) continue;
+            int w = x - camera.x0 + i + (SCREEN_WIDTH-2*camera.radius)/2;
+            int h = y - camera.y0 + j + (SCREEN_HEIGHT-2*camera.radius)/2 - TILE_SIZE;
+            if (w < 0 || w > SCREEN_WIDTH || h < 0 || h > SCREEN_HEIGHT) continue;
+            
+            putPixel(x - camera.x0 + i + (SCREEN_WIDTH-2*camera.radius)/2 ,
+                     y - camera.y0 + j + (SCREEN_HEIGHT-2*camera.radius)/2 - TILE_SIZE, sprite.getPixel(i,j));
+        }
+    }
+}
+
+void Image::putTile (int x, int y, Image &tile, int offset_x, int offset_y) {
     if (offset_y > 0)
         offset_y = (GRID_SIZE - offset_y - 1);
     for (int j = 0; j < TILE_SIZE; j++) {
         for (int i = 0; i < TILE_SIZE; i++) {
-            if (i + shift_x < 0 || i + shift_x > TILE_SIZE - 1 
-            || j + shift_y < 0 || j + shift_y > TILE_SIZE - 1) continue;
+        
+            if (tile.getPixel(offset_x * TILE_SIZE + i , offset_y * TILE_SIZE + j).isEmpty()) continue;
 
-            Pixel pix = tile.getPixel(offset_x * TILE_SIZE + i + shift_x, offset_y * TILE_SIZE + j + shift_y);
-            if (pix.r == 0 && pix.g == 0 && pix.b == 0 && pix.a == 0) continue;
-            
             putPixel(x * TILE_SIZE + i, (GRID_SIZE - y - 1) * TILE_SIZE + j,
-            tile.getPixel(offset_x * TILE_SIZE + i + shift_x, offset_y * TILE_SIZE + j + shift_y));
+            tile.getPixel(offset_x * TILE_SIZE + i, offset_y * TILE_SIZE + j));
         }
     }
 }

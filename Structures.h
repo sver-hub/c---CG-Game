@@ -18,6 +18,10 @@ struct Point {
         return Point(this->x - other.x, this->y - other.y);
     }
 
+    Point operator*(int k) {
+        return Point(x * k, y * k);
+    }
+
     void operator+=(Point other) {
         this->x += other.x;
         this->y += other.y;

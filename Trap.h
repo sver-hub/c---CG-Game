@@ -2,6 +2,7 @@
 #include <vector>
 #include "Sprites.h"
 #include "Structures.h"
+#include "CameraController.h"
 
 class Trap {
     Point pos;
@@ -15,6 +16,6 @@ class Trap {
 
     bool check(Point p, int num_ent);
 
-    void draw(Image &screen);
+    void draw(Image &screen, CameraController camera);
 
 };

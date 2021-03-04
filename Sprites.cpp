@@ -48,9 +48,9 @@ void Sprites::load(Image &tiles, Image &words) {
     enemy_devil = new TextureSet(tiles, 368, 160 - y_shift);
     enemy_angel = new TextureSet(tiles, 368, 128 - y_shift);
     
-    victory.initWord(words, 16, 624, 288, 56);
-    level1.initWord(words, 16, 480, 256, 56);
-    level2.initWord(words, 16, 320, 256, 56);
-    level3.initWord(words, 16, 160, 256, 56);
-    game_over.initWord(words, 0, 0, 360, 56);
+    victory.initWord(words, 16, 624, 144, 28);
+    level1.initWord(words, 16, 480, 128, 28);
+    level2.initWord(words, 16, 320, 128, 28);
+    level3.initWord(words, 16, 160, 128, 28);
+    game_over.initWord(words, 0, 0, 180, 28);
 }

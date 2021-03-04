@@ -5,6 +5,7 @@
 #include "config.h"
 #include "TextureSet.h"
 #include "Structures.h"
+#include "CameraController.h"
 
 class Field;
 
@@ -16,7 +17,6 @@ class Entity {
 
     void setDirection(MovementDir dir);
 
-    void drawIdle(Image &screen);
 
     Point pos;
     Point prev_pos;
@@ -37,13 +37,13 @@ class Entity {
 
     Point getPos() { return pos; }
 
-    void setPos(Point p) { pos = p; }
+    Point getSpritePos();
 
     Point getPrevPos() { return prev_pos; }
 
     bool looksLeft() { return turnDir == MovementDir::LEFT; }
 
-    void draw(Image &screen); 
+    void draw(Image &screen, CameraController camera); 
 };
 
 #endif

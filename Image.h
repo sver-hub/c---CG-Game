@@ -2,12 +2,17 @@
 #define MAIN_IMAGE_H
 
 #include <string>
+struct CameraController;
 
 struct Pixel {
     uint8_t r;
     uint8_t g;
     uint8_t b;
     uint8_t a;
+
+    bool isEmpty() {
+        return r == 0 && g == 0 && b == 0 && a == 0;
+    }
 };
 
 class Image {
@@ -29,7 +34,8 @@ class Image {
     void  putPixel(int x, int y, const Pixel &pix) { data[width* y + x] = pix; }
     void  multPixel(int x, int y, float scale);
     void  addPixel(int x, int y, const Pixel &pix, float scale);
-    void  putTile (int x, int y, Image &tile, int offset_x = 0, int offset_y = 0, int shift_x = 0, int shift_y = 0);
+    void  putTile (int x, int y, Image &tile, int offset_x = 0, int offset_y = 0);
+    void  putSprite(int x, int y, Image &sprite, CameraController camera);
     void  clearTile(int x, int y);
     void  initTile(Image &from, int x, int y);
     void  mirror(Image &from);

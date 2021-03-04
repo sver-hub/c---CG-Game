@@ -6,6 +6,7 @@
 #include "Sprites.h"
 #include "Player.h"
 #include <vector>
+#include "CameraController.h"
 #include "LightSource.h"
 #include "Trap.h"
 #include "Enemy.h"
@@ -21,9 +22,11 @@ class Field {
     char *grid;
     int gridSize;
     int tileSize;
+    int visionRadius;
+    CameraController camera;
     Sprites *sprites;
-    Image level_l1 = Image(SCREEN_WIDTH, SCREEN_HEIGHT, 4);
-    Image level_l2 = Image(SCREEN_WIDTH, SCREEN_HEIGHT, 4);
+    Image level_l1 = Image(GRID_SIZE * TILE_SIZE, GRID_SIZE * TILE_SIZE, 4);
+    Image level_l2 = Image(GRID_SIZE * TILE_SIZE, GRID_SIZE * TILE_SIZE, 4);
 	Player *player;
     std::vector<Enemy*> enemies;
     std::vector<Trap*> traps;
@@ -33,10 +36,6 @@ class Field {
     bool exited = false;
 
     void spawnEnemies();
-
-    void redrawLayer(Image &screen, int layer);
-
-    void redrawTile(Image &screen, int x, int y, int layer, bool clear = true);
 
     public:
     Field(const std::string &level);
@@ -53,7 +52,6 @@ class Field {
 
     void draw(Image &screen);
 
-    void redraw(Image &screen);
 
     bool isValid(Point p);
 

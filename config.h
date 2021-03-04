@@ -6,8 +6,8 @@
 constexpr int TILE_SIZE = 16;
 constexpr int GRID_SIZE = 48;
 
-constexpr int SCREEN_HEIGHT = GRID_SIZE * TILE_SIZE;
-constexpr int SCREEN_WIDTH = GRID_SIZE * TILE_SIZE;
+constexpr int SCREEN_HEIGHT = 600;//GRID_SIZE * TILE_SIZE;
+constexpr int SCREEN_WIDTH = 600;//GRID_SIZE * TILE_SIZE;
 
 constexpr int fps = 30;
 constexpr float turnDelay = .3f;

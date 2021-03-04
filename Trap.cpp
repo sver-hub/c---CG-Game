@@ -6,8 +6,9 @@ Trap::Trap(Point position): pos(position) {
         textures.push_back(&sprites->trap_4);
 }
 
-void Trap::draw(Image &screen) {
-        screen.putTile(pos.x, pos.y, *textures[activated == 0 ? 0 : 1]);
+void Trap::draw(Image &screen, CameraController camera) {
+    if (!camera.isSpriteVisible(Point(pos.x * TILE_SIZE, GRID_SIZE*TILE_SIZE - pos.y * TILE_SIZE))) return;
+    screen.putSprite(pos.x * TILE_SIZE, GRID_SIZE*TILE_SIZE - pos.y * TILE_SIZE, *textures[activated == 0 ? 0 : 1], camera);
 }
 
 bool Trap::check(Point p, int num_ent) {

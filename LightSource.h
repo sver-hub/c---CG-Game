@@ -1,5 +1,6 @@
 #include "Structures.h"
 #include "Image.h"
+#include "CameraController.h"
 
 class LightSource {
     Point pos;
@@ -11,7 +12,7 @@ class LightSource {
     public:
     LightSource(Point _pos, int _radius = 20);
 
-    void draw(Image &screen);
+    void draw(Image &screen, CameraController camera);
 
     void clear(Image &screen, Image &field);
 };

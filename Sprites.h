@@ -49,11 +49,11 @@ public:
 
     Image exit = Image(TILE_SIZE, TILE_SIZE, 4);
 
-    Image level1 = Image(SCREEN_WIDTH, SCREEN_WIDTH, 4); // 256 56
-    Image level2 = Image(SCREEN_WIDTH, SCREEN_WIDTH, 4);
-    Image level3 = Image(SCREEN_WIDTH, SCREEN_WIDTH, 4);
-    Image victory = Image(SCREEN_WIDTH, SCREEN_WIDTH, 4); // 288
-    Image game_over = Image(SCREEN_WIDTH, SCREEN_WIDTH, 4);  //360
+    Image level1 = Image(SCREEN_WIDTH, SCREEN_HEIGHT, 4); // 256 56
+    Image level2 = Image(SCREEN_WIDTH, SCREEN_HEIGHT, 4);
+    Image level3 = Image(SCREEN_WIDTH, SCREEN_HEIGHT, 4);
+    Image victory = Image(SCREEN_WIDTH, SCREEN_HEIGHT, 4); // 288
+    Image game_over = Image(SCREEN_WIDTH, SCREEN_HEIGHT, 4);  //360
 
     TextureSet *hero;
     TextureSet *enemy_slime;

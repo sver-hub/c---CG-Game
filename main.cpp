@@ -145,7 +145,7 @@ void doFadeIn(Image &screen) {
         screen.putScreen(currentLevel == 0 ? sprites->level1 : sprites->level2);
     } else {
         levels[currentLevel]->draw(screen);
-        levels[currentLevel]->redraw(screen);
+        // levels[currentLevel]->redraw(screen);
     }
 
     for (int y = 0; y < SCREEN_HEIGHT; y++) {
@@ -191,17 +191,17 @@ int main(int argc, char** argv) {
   
   
   // initialize
+  
 	Image tiles("./resources/tiles.png");
     Image words("./resources/words.png");
     sprites = Sprites::GetInstance();
     sprites->load(tiles, words);
 
-	Image screenBuffer(SCREEN_WIDTH, SCREEN_HEIGHT, 4);
 
     levels.push_back(new Field("resources/level1.txt"));
     levels.push_back(new Field("resources/level2.txt"));
-  
-    // levels[currentLevel]->draw(screenBuffer);
+
+	Image screenBuffer(SCREEN_WIDTH, SCREEN_HEIGHT, 4);
     screenBuffer.putScreen(sprites->level1);
 
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);  GL_CHECK_ERRORS;
@@ -216,12 +216,12 @@ int main(int argc, char** argv) {
         frameTimer += deltaTime;
 
         glfwPollEvents();
-    
+        
         if (!fade.inProgress()) processPlayerMovement(*levels[currentLevel]);
 
         if (frameTimer < frameTime) continue;
 
-        if (!fade.inProgress()) levels[currentLevel]->redraw(screenBuffer);
+        if (!fade.inProgress()) levels[currentLevel]->draw(screenBuffer);
 
         if (fade.out) doFadeOut(screenBuffer); 
 
