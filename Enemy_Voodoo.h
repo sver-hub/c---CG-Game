@@ -8,5 +8,9 @@ class Enemy_Voodoo: public Enemy {
         visionRadius = 8;
         Sprites *sprites = Sprites::GetInstance();
         textures = sprites->enemy_voodoo;
+        health = 15;
+        maxHealth = health;
+        attackDamage = 15;
+        name = "Voodoo";
     }
 };

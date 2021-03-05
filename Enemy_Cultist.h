@@ -8,5 +8,9 @@ class Enemy_Cultist: public Enemy {
         visionRadius = 7;
         Sprites *sprites = Sprites::GetInstance();
         textures = sprites->enemy_cultist;
+        health = 15;
+        maxHealth = health;
+        attackDamage = 10;
+        name = "Cultist";
     }
 };

@@ -8,5 +8,9 @@ class Enemy_Skelly: public Enemy {
         visionRadius = 5;
         Sprites *sprites = Sprites::GetInstance();
         textures = sprites->enemy_skelly;
+        health = 5;
+        maxHealth = health;
+        attackDamage = 5;
+        name = "Skelly";
     }
 };

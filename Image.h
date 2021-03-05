@@ -35,10 +35,12 @@ class Image {
     void  multPixel(int x, int y, float scale);
     void  addPixel(int x, int y, const Pixel &pix, float scale);
     void  putTile (int x, int y, Image &tile, int offset_x = 0, int offset_y = 0);
-    void  putSprite(int x, int y, Image &sprite, CameraController camera);
+    void  putSprite(int x, int y, Image &sprite, CameraController camera, Pixel color = Pixel{.r=0,.g=0,.b=0,.a=0});
     void  clearTile(int x, int y);
     void  initTile(Image &from, int x, int y);
     void  mirror(Image &from);
+    void  turnLeft(Image &from);
+    void  turnRight(Image &from);
     void  initWord(Image &from, int x, int y, int len_x, int len_y);
     void putScreen(Image& screen);
 

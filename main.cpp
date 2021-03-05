@@ -23,6 +23,7 @@ GLfloat sinceLastAction = 0.0f;
 GLfloat frameTimer = .0f;
 FadeController fade;
 bool victory = false;
+bool death = false;
 Sprites *sprites;
 std::vector<Field*> levels;
 int currentLevel = 0;
@@ -129,6 +130,8 @@ void doFadeOut(Image &screen) {
     if (fade.finished()) {
         if (victory) {
             screen.putScreen(sprites->victory);
+        } else if (death) {
+            screen.putScreen(sprites->game_over);
         } else if (fade.showLabel) {
             screen.putScreen(currentLevel == 0 ? sprites->level1 : sprites->level2);
         } else {
@@ -141,11 +144,12 @@ void doFadeOut(Image &screen) {
 void doFadeIn(Image &screen) {
     if (victory) {
         screen.putScreen(sprites->victory);
+    } else if (death) {
+        screen.putScreen(sprites->game_over);
     } else if (fade.showLabel) {
         screen.putScreen(currentLevel == 0 ? sprites->level1 : sprites->level2);
     } else {
         levels[currentLevel]->draw(screen);
-        // levels[currentLevel]->redraw(screen);
     }
 
     for (int y = 0; y < SCREEN_HEIGHT; y++) {
@@ -155,7 +159,7 @@ void doFadeIn(Image &screen) {
     }
     fade.state--;
 
-    if (fade.finished() && !victory) {
+    if (fade.finished() && !victory && !death) {
         fade.setFadedIn();
     }
 }
@@ -194,9 +198,8 @@ int main(int argc, char** argv) {
   
 	Image tiles("./resources/tiles.png");
     Image words("./resources/words.png");
-    Image fire("./resources/fire.png");
     sprites = Sprites::GetInstance();
-    sprites->load(tiles, words, fire);
+    sprites->load(tiles, words);
 
 
     levels.push_back(new Field("resources/level1.txt", 300));
@@ -234,11 +237,15 @@ int main(int argc, char** argv) {
         glDrawPixels (SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, screenBuffer.getData()); GL_CHECK_ERRORS;
 
         glfwSwapBuffers(window);
-
+        if (victory || death) continue;
+        
         if (currentLevel < levels.size() && levels[currentLevel]->isExited()) {
             fade.start();
             currentLevel++;
             if (currentLevel >= levels.size()) victory = true;
+        } else if (currentLevel < levels.size() && levels[currentLevel]->isDead()) {
+            fade.start();
+            death = true;
         }
 	}
 

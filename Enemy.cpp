@@ -13,13 +13,18 @@ void Enemy::move() {
         for (int i = 0; i < 4; i++) {
             MovementDir dir = randDir;
             dir = static_cast<MovementDir>((static_cast<int>(dir) + i)%4);
-            Point goTo = pos + dirToVec(dir);
+            Point p = pos + dirToVec(dir);
 
-            if (field->isValid(goTo) && 
-                goTo.dist(playerPos) < pos.dist(playerPos)) 
+            if (field->isValid(p))
             {
-                makeMove(dir);
+                if (p.dist(playerPos) < pos.dist(playerPos)) {
+                    makeMove(dir);
+                    setDirection(dir);
+                    return;
+                }
+            } else if (field->isPlayer(p)) {
                 setDirection(dir);
+                attack(p);
                 return;
             }
 

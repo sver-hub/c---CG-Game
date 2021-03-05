@@ -11,7 +11,6 @@
 #include "Trap.h"
 #include "Enemy.h"
 #include "Enemy_Slime.h"
-#include "Enemy_Angel.h"
 #include "Enemy_Cultist.h"
 #include "Enemy_Devil.h"
 #include "Enemy_Skelly.h"
@@ -56,7 +55,15 @@ class Field {
 
     bool isValid(Point p);
 
+    bool isEnemy(Point p);
+
+    bool isPlayer(Point p);
+
+    Entity* getEntityAtPos(Point p);
+
     bool isExited() { return exited; };
+
+    bool isDead() { return !player->isAlive(); }
 
     private:
 

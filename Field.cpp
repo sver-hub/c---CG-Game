@@ -39,6 +39,7 @@ void Field::ProcessInput(MovementDir dir) {
         }
         checkTraps(player->getPos());
         for (const auto &enemy : enemies) {
+            if (!enemy->isAlive()) continue;
             enemy->move();
             checkTraps(enemy->getPos());
         }
@@ -66,6 +67,12 @@ void Field::draw(Image &screen) {
         enemy->draw(screen, camera);
     }
 
+    player->drawAttack(screen, camera);
+
+    for (const auto &enemy : enemies) {
+        enemy->drawAttack(screen, camera);
+    }
+
     for (const auto &ls : lightSources) {
         ls->draw(screen, camera);
     }
@@ -89,15 +96,33 @@ bool Field::isValid(Point p) {
             && grid[p.y * GRID_SIZE + p.x] != cvoid
             && grid[p.y * GRID_SIZE + p.x] != clight)
     {
-        if (p == player->getPos()) return false;
+        if (isPlayer(p) || isEnemy(p)) return false;
 
-        for (const auto &enemy : enemies) {
-            if (p == enemy->getPos()) return false;
-        }
         return true;
     }
     return false;
     
+}
+
+bool Field::isPlayer(Point p) {
+    return p == player->getPos();
+}
+
+bool Field::isEnemy(Point p) {
+    for (const auto &enemy : enemies) {
+        if (p == enemy->getPos()) 
+            return true;
+    } 
+    return false; 
+}
+
+Entity* Field::getEntityAtPos(Point p) {
+    if (isPlayer(p)) return player;
+    for (const auto &enemy : enemies) {
+        if (p == enemy->getPos()) 
+            return enemy;
+    }
+    return nullptr;
 }
 
 void Field::initLevel() {
@@ -129,7 +154,7 @@ void Field::initLevel() {
 }
 
 void Field::spawnEnemies() {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 9; i++) {
         Enemy *sl;
         if (i < 2) sl = new Enemy_Slime(this);
         else if (i < 4) sl = new Enemy_Goblin(this);
@@ -137,7 +162,6 @@ void Field::spawnEnemies() {
         else if (i < 7) sl = new Enemy_Voodoo(this);
         else if (i < 8) sl = new Enemy_Cultist(this);
         else if (i < 9) sl = new Enemy_Devil(this);
-        else if (i < 10) sl = new Enemy_Angel(this);
 
         if (sl->spawn()) {
             enemies.push_back(sl);

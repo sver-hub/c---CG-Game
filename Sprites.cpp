@@ -10,7 +10,7 @@ Sprites *Sprites::GetInstance() {
 }
 
 
-void Sprites::load(Image &tiles, Image &words, Image &_fire) {
+void Sprites::load(Image &tiles, Image &words) {
         
     wall_t.initTile(tiles, 16,496);
     wall.initTile(tiles, 16,480);
@@ -35,20 +35,20 @@ void Sprites::load(Image &tiles, Image &words, Image &_fire) {
     floor_crack_left.initTile(tiles, 16,400);
     floor_crack_right.initTile(tiles, 32,400);
 
-    fire.initTile(_fire, 0, 0);
 
     exit.initTile(tiles, 48,400);
 
     int y_shift = 5;
+    int x_shift = 8;
 
-    hero = new TextureSet(tiles, 144, 384 - y_shift);
-    enemy_slime = new TextureSet(tiles, 432, 384 - y_shift);
-    enemy_skelly = new TextureSet(tiles, 368, 416 - y_shift);
-    enemy_goblin = new TextureSet(tiles, 368, 288 - y_shift);
-    enemy_voodoo = new TextureSet(tiles, 368, 320 - y_shift);
-    enemy_cultist = new TextureSet(tiles, 368, 224 - y_shift);
-    enemy_devil = new TextureSet(tiles, 368, 160 - y_shift);
-    enemy_angel = new TextureSet(tiles, 368, 128 - y_shift);
+    hero = new TextureSet(tiles, 144, 384 - y_shift, 16 + x_shift, 512);
+    enemy_slime = new TextureSet(tiles, 432, 384 - y_shift, 80 + x_shift, 512);
+    enemy_cultist = new TextureSet(tiles, 368, 224 - y_shift, 144 + x_shift, 512);
+    enemy_voodoo = new TextureSet(tiles, 368, 320 - y_shift, 208 + x_shift, 512);
+    enemy_goblin = new TextureSet(tiles, 368, 288 - y_shift, 272 + x_shift, 512);
+    enemy_skelly = new TextureSet(tiles, 368, 416 - y_shift, 336 + x_shift, 512);
+    enemy_devil = new TextureSet(tiles, 368, 160 - y_shift, 400 + x_shift, 512);
+    fire.initTile(tiles, 464 + x_shift, 512);
     
     victory.initWord(words, 16, 624, 144, 28);
     level1.initWord(words, 16, 480, 128, 28);

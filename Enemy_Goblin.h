@@ -8,5 +8,9 @@ class Enemy_Goblin: public Enemy {
         visionRadius = 8;
         Sprites *sprites = Sprites::GetInstance();
         textures = sprites->enemy_goblin;
+        health = 10;
+        maxHealth = health;
+        attackDamage = 5;
+        name = "Goblin";
     }
 };

@@ -70,6 +70,7 @@ static Point dirToVec(MovementDir dir) {
     default:
         break;
     }
+    return Point(0 ,0);
 }
 
 static MovementDir randomDir() {

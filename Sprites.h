@@ -22,7 +22,7 @@ public:
    
     static Sprites *GetInstance();
 
-    void load(Image &tiles, Image &words, Image &fire);
+    void load(Image &tiles, Image &words);
 
     Image wall_t = Image(TILE_SIZE, TILE_SIZE, 4);
     Image wall = Image(TILE_SIZE, TILE_SIZE, 4);
@@ -49,7 +49,6 @@ public:
 
     Image fire = Image(TILE_SIZE, TILE_SIZE, 4);
 
-
     Image exit = Image(TILE_SIZE, TILE_SIZE, 4);
 
     Image level1 = Image(SCREEN_WIDTH, SCREEN_HEIGHT, 4); // 256 56
@@ -65,7 +64,6 @@ public:
     TextureSet *enemy_voodoo;
     TextureSet *enemy_cultist;
     TextureSet *enemy_devil;
-    TextureSet *enemy_angel;
 
 };
 

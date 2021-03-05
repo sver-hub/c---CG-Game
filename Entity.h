@@ -6,6 +6,7 @@
 #include "TextureSet.h"
 #include "Structures.h"
 #include "CameraController.h"
+#include <string>
 
 class Field;
 
@@ -20,14 +21,23 @@ class Entity {
 
     Point pos;
     Point prev_pos;
+    std::string name;
+    int maxHealth;
+    int health;
+    int attackDamage;
     MovementDir direction = MovementDir::LEFT;
     MovementDir turnDir = MovementDir::LEFT;
     TextureSet *textures;
     Field* field;
     int animationState = 0;
     int idleState = 0;
+    int attackState = 0;
+    int damagedState = 0;
+    int deathState = 0;
 
     void updatePrevPos() { prev_pos.x = pos.x; prev_pos.y = pos.y; }
+
+    void displayHealth(Image& screen, CameraController camera);
 
     public:
 
@@ -37,6 +47,14 @@ class Entity {
 
     Point getPos() { return pos; }
 
+    int getAttackDamage() { return attackDamage; }
+
+    bool isAlive() { return health > 0; }
+
+    void takeDamage(int damage);
+
+    bool attack(Point p);
+
     Point getSpritePos();
 
     Point getPrevPos() { return prev_pos; }
@@ -44,6 +62,8 @@ class Entity {
     bool looksLeft() { return turnDir == MovementDir::LEFT; }
 
     void draw(Image &screen, CameraController camera); 
+    
+    void drawAttack(Image &screen, CameraController camera); 
 };
 
 #endif

@@ -8,5 +8,9 @@ class Enemy_Devil: public Enemy {
         visionRadius = 10;
         Sprites *sprites = Sprites::GetInstance();
         textures = sprites->enemy_devil;
+        health = 30;
+        maxHealth = health;
+        attackDamage = 15;
+        name = "Devil";
     }
 };

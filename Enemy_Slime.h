@@ -8,5 +8,9 @@ class Enemy_Slime: public Enemy {
         visionRadius = 5;
         Sprites *sprites = Sprites::GetInstance();
         textures = sprites->enemy_slime;
+        health = 30;
+        maxHealth = health;
+        attackDamage = 5;
+        name = "Slime";
     }
 };

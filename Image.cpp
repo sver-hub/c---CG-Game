@@ -6,6 +6,7 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 #include "CameraController.h"
+
 #include <iostream>
 
 
@@ -75,12 +76,28 @@ void Image::putScreen(Image& screen) {
 void Image::mirror(Image &from) {
     for (int j = 0; j < TILE_SIZE; j++) {
         for (int i = 0; i < TILE_SIZE; i++) {      
-                putPixel(i, j, from.getPixel((TILE_SIZE - i - 1), j));
+                putPixel(i, j, from.getPixel(TILE_SIZE - i - 1, j));
         }
     }
 }
 
-void Image::putSprite(int x, int y, Image &sprite, CameraController camera) {
+void Image::turnLeft(Image &from) {
+    for (int j = 0; j < TILE_SIZE; j++) {
+        for (int i = 0; i < TILE_SIZE; i++) {      
+                putPixel(i, j, from.getPixel(TILE_SIZE - j - 1, i));
+        }
+    }
+}
+
+void Image::turnRight(Image &from) {
+    for (int j = 0; j < TILE_SIZE; j++) {
+        for (int i = 0; i < TILE_SIZE; i++) {      
+                putPixel(i, j, from.getPixel(j, TILE_SIZE - i - 1));
+        }
+    }
+}
+
+void Image::putSprite(int x, int y, Image &sprite, CameraController camera, Pixel color) {
     for (int j = 0; j < TILE_SIZE; j++) {
         for (int i = 0; i < TILE_SIZE; i++) {
             if (sprite.getPixel(i,j).isEmpty()) continue;
@@ -89,6 +106,8 @@ void Image::putSprite(int x, int y, Image &sprite, CameraController camera) {
             if (w < 0 || w > SCREEN_WIDTH || h < 0 || h > SCREEN_HEIGHT) continue;
             
             putPixel(w, h, sprite.getPixel(i,j));
+            if (!color.isEmpty())
+                addPixel(w, h, color, 1);
         }
     }
 }

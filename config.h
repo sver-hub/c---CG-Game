@@ -23,6 +23,7 @@ constexpr char ctrap = 'T';
 constexpr char clight = 'L';
 
 constexpr Pixel empty{0, 0, 0, 0};
+constexpr Pixel black{0, 0, 0, 255};
 constexpr Pixel white{255, 255, 255, 255};
 constexpr Pixel red{255, 0, 0, 255};
 constexpr Pixel green{0, 255, 0, 255};
