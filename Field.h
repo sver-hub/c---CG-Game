@@ -35,10 +35,10 @@ class Field {
     Point exitPos = Point(0,0);
     bool exited = false;
 
-    void spawnEnemies();
+    void spawnEnemies(int en_count[6]);
 
     public:
-    Field(const std::string &level, int _vision);
+    Field(const std::string &level, int en_count[6]);
 
     ~Field();
 
@@ -58,6 +58,8 @@ class Field {
     bool isEnemy(Point p);
 
     bool isPlayer(Point p);
+
+    bool isTrap(Point p);
 
     Entity* getEntityAtPos(Point p);
 

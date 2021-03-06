@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-Field::Field(const std::string &level, int _vision): gridSize(GRID_SIZE), tileSize(TILE_SIZE), visionRadius(_vision) {
+Field::Field(const std::string &level, int en_count[6]): gridSize(GRID_SIZE), tileSize(TILE_SIZE), visionRadius(300) {
     grid = new char[gridSize*gridSize];
     enemies = std::vector<Enemy*>();
     traps = std::vector<Trap*>();
@@ -24,7 +24,7 @@ Field::Field(const std::string &level, int _vision): gridSize(GRID_SIZE), tileSi
     fin.close();
 
     initLevel();
-    spawnEnemies();     
+    spawnEnemies(en_count);     
 }
 
 Field::~Field() {
@@ -77,6 +77,13 @@ void Field::draw(Image &screen) {
         ls->draw(screen, camera);
     }
 
+    player->displayHealth(screen, camera);
+
+    for (const auto &enemy : enemies) {
+        if (enemy->isAlive())
+            enemy->displayHealth(screen, camera);
+    }
+
     for (int j = 0; j < SCREEN_HEIGHT; j++) {
         for (int i = 0; i < SCREEN_WIDTH; i++) {
             if (level_l2.getPixel(camera.x0 + i, camera.y0 + j).isEmpty()) continue;
@@ -111,6 +118,14 @@ bool Field::isPlayer(Point p) {
 bool Field::isEnemy(Point p) {
     for (const auto &enemy : enemies) {
         if (p == enemy->getPos()) 
+            return true;
+    } 
+    return false; 
+}
+
+bool Field::isTrap(Point p) {
+    for (const auto &trap : traps) {
+        if (p == trap->getPos()) 
             return true;
     } 
     return false; 
@@ -153,24 +168,27 @@ void Field::initLevel() {
     } 
 }
 
-void Field::spawnEnemies() {
-    for (int i = 0; i < 9; i++) {
-        Enemy *sl;
-        if (i < 2) sl = new Enemy_Slime(this);
-        else if (i < 4) sl = new Enemy_Goblin(this);
-        else if (i < 6) sl = new Enemy_Skelly(this);
-        else if (i < 7) sl = new Enemy_Voodoo(this);
-        else if (i < 8) sl = new Enemy_Cultist(this);
-        else if (i < 9) sl = new Enemy_Devil(this);
+void Field::spawnEnemies(int en_count[6]) {
+    // skelly slime goblin voodoo cultist devil
 
-        if (sl->spawn()) {
-            enemies.push_back(sl);
-        }
-        else {
-            delete sl;
+    for (int i = 0; i < 6; i++) {
+        for (int j = en_count[i]; j >0; j--) {
+            Enemy *en;
+            if (i == 0) en = new Enemy_Skelly(this);
+            else if (i == 1) en = new Enemy_Slime(this);
+            else if (i == 2) en = new Enemy_Goblin(this);
+            else if (i == 3) en = new Enemy_Voodoo(this);
+            else if (i == 4) en = new Enemy_Cultist(this);
+            else if (i == 5) en = new Enemy_Devil(this);
+
+            if (en->spawn()) {
+                enemies.push_back(en);
+            }
+            else {
+                delete en;
+            }
         }
     }
-    
 }
 
 char* Field::getNeighbors(int x, int y) {

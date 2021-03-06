@@ -20,6 +20,7 @@ bool Player::move(MovementDir dir) {
     if (field->isValid(p)) {
         makeMove(dir);
         moved = true;
+        if (field->isTrap(p)) takeDamage(15);
     } else if (field->isEnemy(p)) {
         if (attack(p)) moved = true;
     }

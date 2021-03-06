@@ -1,4 +1,5 @@
 #include "Trap.h"
+#include "Field.h"
 
 Trap::Trap(Point position): pos(position) {
         Sprites *sprites = Sprites::GetInstance();
@@ -13,7 +14,6 @@ void Trap::draw(Image &screen, CameraController camera) {
 
 bool Trap::check(Point p, int num_ent) {
     if (pos == p) {
-
         activated = num_ent;
         return true;
     }

@@ -37,8 +37,6 @@ class Entity {
 
     void updatePrevPos() { prev_pos.x = pos.x; prev_pos.y = pos.y; }
 
-    void displayHealth(Image& screen, CameraController camera);
-
     public:
 
     Entity(Field* _field, Point position): pos(position), prev_pos(position), field(_field) {}
@@ -63,7 +61,9 @@ class Entity {
 
     void draw(Image &screen, CameraController camera); 
     
-    void drawAttack(Image &screen, CameraController camera); 
+    void drawAttack(Image &screen, CameraController camera);
+
+    void displayHealth(Image& screen, CameraController camera);
 };
 
 #endif

@@ -133,7 +133,7 @@ void doFadeOut(Image &screen) {
         } else if (death) {
             screen.putScreen(sprites->game_over);
         } else if (fade.showLabel) {
-            screen.putScreen(currentLevel == 0 ? sprites->level1 : sprites->level2);
+            screen.putScreen(currentLevel == 0 ? sprites->level1 : currentLevel == 1 ? sprites->level2 : sprites->level3);
         } else {
             levels[currentLevel]->draw(screen);
         }
@@ -147,7 +147,7 @@ void doFadeIn(Image &screen) {
     } else if (death) {
         screen.putScreen(sprites->game_over);
     } else if (fade.showLabel) {
-        screen.putScreen(currentLevel == 0 ? sprites->level1 : sprites->level2);
+        screen.putScreen(currentLevel == 0 ? sprites->level1 : currentLevel == 1 ? sprites->level2 : sprites->level3);
     } else {
         levels[currentLevel]->draw(screen);
     }
@@ -201,9 +201,15 @@ int main(int argc, char** argv) {
     sprites = Sprites::GetInstance();
     sprites->load(tiles, words);
 
+    // skelly slime goblin voodoo cultist devil
+    int enemies_l1[6] = {3, 2, 2, 1, 1, 1};
+    int enemies_l2[6] = {1, 1, 1, 2, 3, 2};
+    int enemies_l3[6] = {1, 2, 1, 3, 2, 1};
 
-    levels.push_back(new Field("resources/level1.txt", 300));
-    levels.push_back(new Field("resources/level2.txt", 300));
+    levels.push_back(new Field("resources/level1.txt", enemies_l1));
+    levels.push_back(new Field("resources/level2.txt", enemies_l2));
+    levels.push_back(new Field("resources/level3.txt", enemies_l3));
+
 
 	Image screenBuffer(SCREEN_WIDTH, SCREEN_HEIGHT, 4);
     screenBuffer.putScreen(sprites->level1);

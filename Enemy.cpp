@@ -19,6 +19,7 @@ void Enemy::move() {
             {
                 if (p.dist(playerPos) < pos.dist(playerPos)) {
                     makeMove(dir);
+                    if (field->isTrap(p)) takeDamage(5);
                     setDirection(dir);
                     return;
                 }
@@ -36,9 +37,10 @@ void Enemy::move() {
         if (k == 0)  return;
 
         dir = randomDir();
-        Point goTo = pos + dirToVec(dir);
-        if (field->isValid(goTo))
+        Point p = pos + dirToVec(dir);
+        if (field->isValid(p) && !field->isTrap(p)){
             makeMove(dir);
+        }
         setDirection(dir);
     }
 }

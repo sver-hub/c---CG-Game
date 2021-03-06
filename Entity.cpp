@@ -41,8 +41,6 @@ void Entity::draw(Image &screen, CameraController camera) {
         }
     }
 
-    displayHealth(screen, camera);
-
 }
 
 void Entity::drawAttack(Image &screen, CameraController camera) {
@@ -73,13 +71,14 @@ void Entity::drawAttack(Image &screen, CameraController camera) {
 
 void Entity::displayHealth(Image& screen, CameraController camera) {
     Point p = getSpritePos();
+    if (!camera.isSpriteVisible(p)) return;
     float healthEnd = health*(TILE_SIZE-4)/maxHealth;
     for (int j = 0; j < 2; j++) {
         for (int i = 2; i < TILE_SIZE-4; i++) {
             int w = p.x - camera.x0 + i + (SCREEN_WIDTH-2*camera.radius)/2;
             int h = p.y - camera.y0 + j + (SCREEN_HEIGHT-2*camera.radius)/2 - TILE_SIZE;
             if (w < 0 || w > SCREEN_WIDTH || h < 0 || h > SCREEN_HEIGHT) continue;
-            screen.putPixel(w, h + 3*TILE_SIZE/2, i - 2 < healthEnd ? red : black);
+            screen.putPixel(w, h + 3*TILE_SIZE/2 + 4, i - 2 < healthEnd ? red : black);
         }
     }
 }

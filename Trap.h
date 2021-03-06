@@ -1,3 +1,6 @@
+#ifndef TRAP
+#define TRAP
+
 #include "Image.h"
 #include <vector>
 #include "Sprites.h"
@@ -17,5 +20,6 @@ class Trap {
     bool check(Point p, int num_ent);
 
     void draw(Image &screen, CameraController camera);
-
 };
+
+#endif
